@@ -1,86 +1,129 @@
 package net.jfabricationgames.todo.frame;
 
-import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
+import javafx.stage.Window;
+import net.jfabricationgames.todo.frame.button.CloseAllButtonCommand;
+import net.jfabricationgames.todo.frame.button.CloseButtonCommand;
+import net.jfabricationgames.todo.frame.button.NewButtonCommand;
+import net.jfabricationgames.todo.frame.button.OpenButtonCommand;
+import net.jfabricationgames.todo.frame.button.SaveAllButtonCommand;
+import net.jfabricationgames.todo.frame.button.SaveButtonCommand;
+import net.jfabricationgames.todo.frame.button.SettingsButtonCommand;
 
 public class TodoFrameController implements Initializable {
-
-    @FXML
-    private Button buttonNew;
-    
-    @FXML
-    private Button buttonOpen;
-
-    @FXML
-    private Button buttonSave;
-
-    @FXML
-    private Button buttonSaveAll;
-
-    @FXML
-    private Button buttonClose;
-
-    @FXML
-    private Button buttonCloseAll;
-
-    @FXML
-    private Button buttonSettings;
-
-    @FXML
-    private TextField textAreaSearch;
-
-    @FXML
-    private Button buttonSearch;
-
-    @FXML
-    private TabPane tabView;
-    
+	
+	@FXML
+	private Button buttonNew;
+	
+	@FXML
+	private Button buttonOpen;
+	
+	@FXML
+	private Button buttonSave;
+	
+	@FXML
+	private Button buttonSaveAll;
+	
+	@FXML
+	private Button buttonClose;
+	
+	@FXML
+	private Button buttonCloseAll;
+	
+	@FXML
+	private Button buttonSettings;
+	
+	@FXML
+	private TextField textAreaSearch;
+	
+	@FXML
+	private Button buttonSearch;
+	
+	@FXML
+	private TabPane tabView;
+	
+	private List<TodoTabController> todoTabControllers = new ArrayList<TodoTabController>();
+	
+	//***********************************************************************************
+	//*** public
+	//***********************************************************************************
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		insertTestTab();
+		insertInitialTab();
+		addButtonCommands();
 	}
-
-	private void insertTestTab() {
-		TodoTabController controller = new TodoTabController();
-		Tab tab = new Tab();
-		AnchorPane tabContent = new AnchorPane();
-		tab.setContent(tabContent);
-		insertPane("/net/jfabricationgames/todo/frame/TodoTab.fxml", tabContent, controller, null, this);
-		tabView.getTabs().add(tab);
-		tab.setText("Tab Title");
+	
+	public void addTab(TodoTabController tabController) {
+		todoTabControllers.add(tabController);
+		tabView.getTabs().add(tabController.getTab());
+		tabView.getSelectionModel().select(tabController.getTab());
+		tabController.requestFocusOnCodeArea();
+	}
+	
+	public void removeTab(TodoTabController tabController) {
+		todoTabControllers.remove(tabController);
+		tabView.getTabs().remove(tabController.getTab());
+		if (todoTabControllers.isEmpty()) {
+			//always keep one tab open (by adding a new one if all are closed)
+			new NewButtonCommand(this).execute();
+		}
 	}
 	
 	/**
-	 * Load an fxml pane into an anchor pane with a loader object (any object) for the relative path
+	 * Get the current window for showing dialogs
 	 */
-	public void insertPane(String fxmlFileName, AnchorPane parent, Initializable controller, String cssFileName, Object loader) {
-		try {
-			URL fxmlUrl = loader.getClass().getResource(fxmlFileName);
-			FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl);
-			fxmlLoader.setController(controller);
-			Parent pane = fxmlLoader.load();
-			if (cssFileName != null) {
-				pane.getStylesheets().add(getClass().getResource(cssFileName).toExternalForm());
-			}
-			parent.getChildren().add(pane);
-			AnchorPane.setBottomAnchor(pane, 0d);
-			AnchorPane.setTopAnchor(pane, 0d);
-			AnchorPane.setLeftAnchor(pane, 0d);
-			AnchorPane.setRightAnchor(pane, 0d);
+	public Window getStage() {
+		return tabView.getScene().getWindow();
+	}
+	
+	/**
+	 * Get the controller of the currently selected tab
+	 */
+	public Optional<TodoTabController> getCurrentTabController() {
+		int selectedTab = tabView.getSelectionModel().getSelectedIndex();
+		if (selectedTab < 0 || todoTabControllers.size() <= selectedTab) {
+			return Optional.empty();
 		}
-		catch (IOException ioe) {
-			ioe.printStackTrace();
-		}
+		return Optional.of(todoTabControllers.get(selectedTab));
+	}
+	
+	public List<TodoTabController> getAllTabControllers() {
+		return new ArrayList<TodoTabController>(todoTabControllers);
+	}
+	
+	//***********************************************************************************
+	//*** private
+	//***********************************************************************************
+	
+	private void insertInitialTab() {
+		new NewButtonCommand(this).execute();
+	}
+	
+	private void addButtonCommands() {
+		NewButtonCommand newButtonCommand = new NewButtonCommand(this);
+		buttonNew.setOnAction(e -> newButtonCommand.execute());
+		OpenButtonCommand openButtonCommand = new OpenButtonCommand(this);
+		buttonOpen.setOnAction(e -> openButtonCommand.execute());
+		SaveButtonCommand saveButtonCommand = new SaveButtonCommand(this);
+		buttonSave.setOnAction(e -> saveButtonCommand.execute());
+		SaveAllButtonCommand saveAllButtonCommand = new SaveAllButtonCommand(this);
+		buttonSaveAll.setOnAction(e -> saveAllButtonCommand.execute());
+		CloseButtonCommand closeButtonCommand = new CloseButtonCommand(this);
+		buttonClose.setOnAction(e -> closeButtonCommand.execute());
+		CloseAllButtonCommand closeAllButtonCommand = new CloseAllButtonCommand(this);
+		buttonCloseAll.setOnAction(e -> closeAllButtonCommand.execute());
+		SettingsButtonCommand settingsButtonCommand = new SettingsButtonCommand(this);
+		buttonSettings.setOnAction(e -> settingsButtonCommand.execute());
 	}
 }
