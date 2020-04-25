@@ -17,6 +17,9 @@ import javafx.scene.layout.AnchorPane;
 public class TodoFrameController implements Initializable {
 
     @FXML
+    private Button buttonNew;
+    
+    @FXML
     private Button buttonOpen;
 
     @FXML

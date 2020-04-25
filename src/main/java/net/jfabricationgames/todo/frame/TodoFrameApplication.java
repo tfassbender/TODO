@@ -28,6 +28,8 @@ public class TodoFrameApplication extends Application {
 			fxmlLoader.setController(controller);
 			Parent root = fxmlLoader.load();
 			Scene scene = new Scene(root, 800, 600);
+			String stylesheet = getClass().getResource("/net/jfabricationgames/todo/css/highlighting.css").toExternalForm();
+			scene.getStylesheets().add(stylesheet);
 			primaryStage.setTitle(APPLCIATION_NAME);
 			primaryStage.setScene(scene);
 			primaryStage.getIcons().add(new Image("/net/jfabricationgames/todo/frame/icon_todo.png"));

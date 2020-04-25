@@ -28,7 +28,7 @@
          <children>
             <HBox prefHeight="100.0" prefWidth="200.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <children>
-                  <Button mnemonicParsing="false">
+                  <Button fx:id="buttonNew" mnemonicParsing="false">
                      <graphic>
                         <ImageView>
                            <image>
