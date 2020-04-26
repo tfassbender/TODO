@@ -1,17 +1,23 @@
 package net.jfabricationgames.todo.frame;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import net.jfabricationgames.todo.commands.AbstractButtonCommand;
+import net.jfabricationgames.todo.commands.ButtonCommand;
 import net.jfabricationgames.todo.commands.button.CloseAllButtonCommand;
 import net.jfabricationgames.todo.commands.button.CloseButtonCommand;
 import net.jfabricationgames.todo.commands.button.NewButtonCommand;
@@ -45,14 +51,19 @@ public class TodoFrameController implements Initializable {
 	
 	private List<TodoTabController> todoTabControllers = new ArrayList<TodoTabController>();
 	
+	private TodoFramePropertiesStore properties = new TodoFramePropertiesStore();
+	
 	//***********************************************************************************
 	//*** public
 	//***********************************************************************************
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		loadTabs();
 		insertInitialTab();
 		addButtonCommands();
+		addWindowClosingListeners();
+		adjustWindowPosition();
 	}
 	
 	/**
@@ -80,7 +91,7 @@ public class TodoFrameController implements Initializable {
 	/**
 	 * Get the current window for showing dialogs
 	 */
-	public Window getStage() {
+	public Window getWindow() {
 		return tabView.getScene().getWindow();
 	}
 	
@@ -127,9 +138,18 @@ public class TodoFrameController implements Initializable {
 	//*** private
 	//***********************************************************************************
 	
+	private void loadTabs() {
+		List<File> rememberedTabs = properties.getTodoFiles();
+		for (File file : rememberedTabs) {
+			new OpenFileCommand(this, file).execute();
+		}
+	}
+	
 	private void insertInitialTab() {
-		new NewButtonCommand(this).execute();
-		requestFocusOnCurrentCodeArea();
+		if (getNumTabs() == 0) {
+			new NewButtonCommand(this).execute();
+			requestFocusOnCurrentCodeArea();
+		}
 	}
 	
 	private void addButtonCommands() {
@@ -147,5 +167,43 @@ public class TodoFrameController implements Initializable {
 		buttonCloseAll.setOnAction(e -> closeAllButtonCommand.execute());
 		SettingsButtonCommand settingsButtonCommand = new SettingsButtonCommand(this);
 		buttonSettings.setOnAction(e -> settingsButtonCommand.execute());
+	}
+	
+	private void addWindowClosingListeners() {
+		Platform.runLater(() -> {
+			getWindow().setOnCloseRequest(e -> {
+				properties.setFiles(getAllTabControllers().stream().map(TodoTabController::getFile).collect(Collectors.toList()));
+				properties.setWindowPosition(getWindow());
+				properties.store();
+			});
+		});
+	}
+	
+	private void adjustWindowPosition() {
+		Platform.runLater(() -> {
+			properties.adjustWindowPosition(getWindow());
+		});
+	}
+	
+	//***********************************************************************************
+	//*** classes
+	//***********************************************************************************
+	
+	/**
+	 * Opens a file as ToDo without a {@link FileChooser} dialog.
+	 */
+	public static class OpenFileCommand extends AbstractButtonCommand implements ButtonCommand {
+		
+		private File file;
+		
+		public OpenFileCommand(TodoFrameController controller, File file) {
+			super(controller);
+			this.file = file;
+		}
+		
+		@Override
+		public void execute() {
+			openFileAsTodo(file);
+		}
 	}
 }

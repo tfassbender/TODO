@@ -68,9 +68,31 @@ public class TodoTabController implements Initializable {
 				bw.close();
 			}
 			lastSavedText = text;
+			
+			//set the tab title to the files title
+			updateTabName();
 		}
 		catch (IOException ioe) {
 			DialogUtils.showErrorDialog("File couldn't be saved", "The file couldn't be saved:\n" + file.getAbsolutePath(), ioe.getMessage(), true);
+		}
+	}
+	
+	/**
+	 * Update the name of the tab that is hold by this controller to the new ToDo name. This is usually the first headline in the text or the file
+	 * name.
+	 */
+	public void updateTabName() {
+		if (codeArea.getText().startsWith("# ")) {
+			//if the first line is a headline, use the headline as name of the tab
+			int firstLineEndIndex = codeArea.getText().indexOf("\n");
+			if (firstLineEndIndex == -1) {
+				firstLineEndIndex = codeArea.getText().length();
+			}
+			String name = codeArea.getText().substring(2, firstLineEndIndex);
+			tab.setText(name);
+		}
+		else if (file != null) {
+			tab.setText(file.getName().substring(0, file.getName().lastIndexOf('.')));
 		}
 	}
 	
