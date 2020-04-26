@@ -45,7 +45,9 @@ public class TodoFramePropertiesStore {
 		
 		String[] files = properties.getProperty(PROPERTY_FILES_KEY, "").toString().split(FILES_DELEMITER_REGEX);
 		for (String file : files) {
-			todoFiles.add(new File(file));
+			if (!file.trim().isEmpty()) {
+				todoFiles.add(new File(file));
+			}
 		}
 		
 		return todoFiles;
