@@ -64,6 +64,7 @@ public class TodoFrameController implements Initializable {
 		addButtonCommands();
 		addWindowClosingListeners();
 		adjustWindowPosition();
+		chooseInitialSelectedTab();
 	}
 	
 	/**
@@ -174,6 +175,7 @@ public class TodoFrameController implements Initializable {
 			getWindow().setOnCloseRequest(e -> {
 				properties.setFiles(getAllTabControllers().stream().map(TodoTabController::getFile).collect(Collectors.toList()));
 				properties.setWindowPosition(getWindow());
+				properties.setSelectedTab(getSelectedTabIndex());
 				properties.store();
 			});
 		});
@@ -183,6 +185,10 @@ public class TodoFrameController implements Initializable {
 		Platform.runLater(() -> {
 			properties.adjustWindowPosition(getWindow());
 		});
+	}
+	
+	private void chooseInitialSelectedTab() {
+		setSelectedTab(properties.getSelectedTab());
 	}
 	
 	//***********************************************************************************

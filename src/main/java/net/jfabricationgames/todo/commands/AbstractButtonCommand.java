@@ -28,6 +28,7 @@ public abstract class AbstractButtonCommand implements ButtonCommand {
 		}
 		TodoTabController newTabController = insertNewTab(file, file.getName().substring(0, file.getName().lastIndexOf('.')), content);
 		newTabController.updateTabName();
+		newTabController.assumeTextSaved();
 	}
 	
 	protected TodoTabController insertNewTab(File file, String name, String content) {

@@ -22,6 +22,7 @@ public class TodoFramePropertiesStore {
 	private static final String PROPERTY_FILES_KEY = "FILES";
 	private static final String FILES_DELEMITER_REGEX = "\\|";
 	private static final String FILES_DELEMITER = "|";
+	private static final String PROPERTY_SELECTED_TAB_INDEX = "SELECTED_TAB_INDEX";
 	
 	private static final String PROPERTY_WINDOW_X = "WINDOW_POS_X";
 	private static final String PROPERTY_WINDOW_Y = "WINDOW_POS_Y";
@@ -56,6 +57,25 @@ public class TodoFramePropertiesStore {
 	}
 	
 	/**
+	 * Adjust the windows position to the values in the properties.
+	 */
+	public void adjustWindowPosition(Window window) {
+		double x = Double.parseDouble(properties.getProperty(PROPERTY_WINDOW_X, "200"));
+		double y = Double.parseDouble(properties.getProperty(PROPERTY_WINDOW_Y, "200"));
+		double width = Double.parseDouble(properties.getProperty(PROPERTY_WINDOW_WIDTH, "800"));
+		double height = Double.parseDouble(properties.getProperty(PROPERTY_WINDOW_HEIGHT, "600"));
+		boolean maximized = Boolean.parseBoolean(properties.getProperty(PROPERTY_WINDOW_MAXIMIZED, "false"));
+		
+		window.setX(x);
+		window.setY(y);
+		if (!maximized) {
+			window.setWidth(width);
+			window.setHeight(height);
+		}
+		Platform.runLater(() -> ((Stage) window).setMaximized(maximized));
+	}
+	
+	/**
 	 * Set the properties value to the current window position
 	 */
 	public void setWindowPosition(Window window) {
@@ -74,23 +94,12 @@ public class TodoFramePropertiesStore {
 		properties.setProperty(PROPERTY_WINDOW_MAXIMIZED, Boolean.toString(maximized));
 	}
 	
-	/**
-	 * Adjust the windows position to the values in the properties.
-	 */
-	public void adjustWindowPosition(Window window) {
-		double x = Double.parseDouble(properties.getProperty(PROPERTY_WINDOW_X, "200"));
-		double y = Double.parseDouble(properties.getProperty(PROPERTY_WINDOW_Y, "200"));
-		double width = Double.parseDouble(properties.getProperty(PROPERTY_WINDOW_WIDTH, "800"));
-		double height = Double.parseDouble(properties.getProperty(PROPERTY_WINDOW_HEIGHT, "600"));
-		boolean maximized = Boolean.parseBoolean(properties.getProperty(PROPERTY_WINDOW_MAXIMIZED, "false"));
-		
-		window.setX(x);
-		window.setY(y);
-		if (!maximized) {
-			window.setWidth(width);
-			window.setHeight(height);
-		}
-		Platform.runLater(() -> ((Stage) window).setMaximized(maximized));
+	public int getSelectedTab() {
+		return Integer.parseInt(properties.getProperty(PROPERTY_SELECTED_TAB_INDEX, "0"));
+	}
+	
+	public void setSelectedTab(int selectedTabIndex) {
+		properties.setProperty(PROPERTY_SELECTED_TAB_INDEX, Integer.toString(selectedTabIndex));
 	}
 	
 	public void store() {
