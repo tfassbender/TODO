@@ -1,9 +1,11 @@
-package net.jfabricationgames.todo.highlighting;
+package net.jfabricationgames.todo.configuration.highlighting;
 
 import java.util.function.IntFunction;
 
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
+
+import net.jfabricationgames.todo.configuration.CodeAreaConfiguator;
 
 public class ParagraphConfigurator implements CodeAreaConfiguator {
 	

@@ -1,4 +1,4 @@
-package net.jfabricationgames.todo.frame.button;
+package net.jfabricationgames.todo.commands;
 
 import net.jfabricationgames.todo.frame.TodoFrameController;
 

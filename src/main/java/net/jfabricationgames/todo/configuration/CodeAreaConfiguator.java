@@ -1,4 +1,4 @@
-package net.jfabricationgames.todo.highlighting;
+package net.jfabricationgames.todo.configuration;
 
 import org.fxmisc.richtext.CodeArea;
 

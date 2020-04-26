@@ -14,27 +14,29 @@ import org.fxmisc.richtext.CodeArea;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Tab;
+import net.jfabricationgames.todo.configuration.CodeAreaConfiguator;
+import net.jfabricationgames.todo.configuration.highlighting.ParagraphConfigurator;
+import net.jfabricationgames.todo.configuration.highlighting.TodoHighlightingConfigurator;
+import net.jfabricationgames.todo.configuration.hotkey.TodoHotkeyConfigurator;
 import net.jfabricationgames.todo.frame.util.DialogUtils;
-import net.jfabricationgames.todo.highlighting.CodeAreaConfiguator;
-import net.jfabricationgames.todo.highlighting.ParagraphConfigurator;
-import net.jfabricationgames.todo.highlighting.TodoHighlightingConfigurator;
 
 public class TodoTabController implements Initializable {
 	
 	public static final String TODO_TAB_FXML = "/net/jfabricationgames/todo/frame/TodoTab.fxml";
-	
 	public static final String DEFAULT_FILE_DIR = "TODOs/";
 	
-	private static final List<CodeAreaConfiguator> configurators = Arrays.asList(new TodoHighlightingConfigurator(), new ParagraphConfigurator());
+	private final List<CodeAreaConfiguator> configurators;
 	
 	@FXML
 	private CodeArea codeArea;
 	
 	private Tab tab;
-	
 	private File file;
-	
 	private String lastSavedText;
+	
+	public TodoTabController(TodoFrameController frameController) {
+		configurators = Arrays.asList(new TodoHighlightingConfigurator(), new ParagraphConfigurator(), new TodoHotkeyConfigurator(frameController));
+	}
 	
 	//***********************************************************************************
 	//*** public
@@ -108,6 +110,10 @@ public class TodoTabController implements Initializable {
 	}
 	public void setFile(File file) {
 		this.file = file;
+	}
+	
+	public CodeArea getCodeArea() {
+		return codeArea;
 	}
 	
 	//***********************************************************************************

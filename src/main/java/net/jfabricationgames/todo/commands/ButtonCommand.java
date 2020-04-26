@@ -1,4 +1,4 @@
-package net.jfabricationgames.todo.frame.button;
+package net.jfabricationgames.todo.commands;
 
 /**
  * A Runnable for button functions.

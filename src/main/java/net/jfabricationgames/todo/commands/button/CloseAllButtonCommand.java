@@ -1,7 +1,9 @@
-package net.jfabricationgames.todo.frame.button;
+package net.jfabricationgames.todo.commands.button;
 
 import java.util.List;
 
+import net.jfabricationgames.todo.commands.AbstractCloseButtonCommand;
+import net.jfabricationgames.todo.commands.ButtonCommand;
 import net.jfabricationgames.todo.frame.TodoFrameController;
 import net.jfabricationgames.todo.frame.TodoTabController;
 

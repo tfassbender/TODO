@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
+import net.jfabricationgames.todo.frame.TodoFrameController;
 import net.jfabricationgames.todo.frame.TodoTabController;
 
 public class GuiUtils {
@@ -46,8 +47,8 @@ public class GuiUtils {
 		}
 	}
 	
-	public static TodoTabController loadTab(Object loader) {
-		TodoTabController tabController = new TodoTabController();
+	public static TodoTabController loadTab(TodoFrameController frameController, Object loader) {
+		TodoTabController tabController = new TodoTabController(frameController);
 		Tab tab = new Tab();
 		AnchorPane tabContent = new AnchorPane();
 		tab.setContent(tabContent);

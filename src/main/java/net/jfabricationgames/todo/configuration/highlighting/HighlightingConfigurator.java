@@ -1,4 +1,4 @@
-package net.jfabricationgames.todo.highlighting;
+package net.jfabricationgames.todo.configuration.highlighting;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
+
+import net.jfabricationgames.todo.configuration.CodeAreaConfiguator;
 
 public class HighlightingConfigurator implements CodeAreaConfiguator {
 	

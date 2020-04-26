@@ -12,43 +12,34 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
-import net.jfabricationgames.todo.frame.button.CloseAllButtonCommand;
-import net.jfabricationgames.todo.frame.button.CloseButtonCommand;
-import net.jfabricationgames.todo.frame.button.NewButtonCommand;
-import net.jfabricationgames.todo.frame.button.OpenButtonCommand;
-import net.jfabricationgames.todo.frame.button.SaveAllButtonCommand;
-import net.jfabricationgames.todo.frame.button.SaveButtonCommand;
-import net.jfabricationgames.todo.frame.button.SettingsButtonCommand;
+import net.jfabricationgames.todo.commands.button.CloseAllButtonCommand;
+import net.jfabricationgames.todo.commands.button.CloseButtonCommand;
+import net.jfabricationgames.todo.commands.button.NewButtonCommand;
+import net.jfabricationgames.todo.commands.button.OpenButtonCommand;
+import net.jfabricationgames.todo.commands.button.SaveAllButtonCommand;
+import net.jfabricationgames.todo.commands.button.SaveButtonCommand;
+import net.jfabricationgames.todo.commands.button.SettingsButtonCommand;
 
 public class TodoFrameController implements Initializable {
 	
 	@FXML
 	private Button buttonNew;
-	
 	@FXML
 	private Button buttonOpen;
-	
 	@FXML
 	private Button buttonSave;
-	
 	@FXML
 	private Button buttonSaveAll;
-	
 	@FXML
 	private Button buttonClose;
-	
 	@FXML
 	private Button buttonCloseAll;
-	
 	@FXML
 	private Button buttonSettings;
-	
 	@FXML
 	private TextField textAreaSearch;
-	
 	@FXML
 	private Button buttonSearch;
-	
 	@FXML
 	private TabPane tabView;
 	
@@ -64,6 +55,9 @@ public class TodoFrameController implements Initializable {
 		addButtonCommands();
 	}
 	
+	/**
+	 * Add a new tab that is included in a tabController
+	 */
 	public void addTab(TodoTabController tabController) {
 		todoTabControllers.add(tabController);
 		tabView.getTabs().add(tabController.getTab());
@@ -71,6 +65,9 @@ public class TodoFrameController implements Initializable {
 		tabController.requestFocusOnCodeArea();
 	}
 	
+	/**
+	 * Remove a tab that is identified by it's tab controller
+	 */
 	public void removeTab(TodoTabController tabController) {
 		todoTabControllers.remove(tabController);
 		tabView.getTabs().remove(tabController.getTab());
@@ -98,8 +95,32 @@ public class TodoFrameController implements Initializable {
 		return Optional.of(todoTabControllers.get(selectedTab));
 	}
 	
+	/**
+	 * Get the controllers of all tabs that are opened as a list
+	 */
 	public List<TodoTabController> getAllTabControllers() {
 		return new ArrayList<TodoTabController>(todoTabControllers);
+	}
+	
+	public int getSelectedTabIndex() {
+		return tabView.getSelectionModel().getSelectedIndex();
+	}
+	
+	public int getNumTabs() {
+		return todoTabControllers.size();
+	}
+	
+	public void setSelectedTab(int tab) {
+		tabView.getSelectionModel().select(tab);
+		requestFocusOnCurrentCodeArea();
+	}
+	
+	public void requestFocusOnCurrentCodeArea() {
+		getCurrentTabController().ifPresent(controller -> controller.requestFocusOnCodeArea());
+	}
+	
+	public void requestFocusOnSearchBar() {
+		textAreaSearch.requestFocus();
 	}
 	
 	//***********************************************************************************
@@ -108,6 +129,7 @@ public class TodoFrameController implements Initializable {
 	
 	private void insertInitialTab() {
 		new NewButtonCommand(this).execute();
+		requestFocusOnCurrentCodeArea();
 	}
 	
 	private void addButtonCommands() {

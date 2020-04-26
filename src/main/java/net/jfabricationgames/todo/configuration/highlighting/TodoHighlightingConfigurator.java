@@ -1,4 +1,4 @@
-package net.jfabricationgames.todo.highlighting;
+package net.jfabricationgames.todo.configuration.highlighting;
 
 public class TodoHighlightingConfigurator extends HighlightingConfigurator {
 	
@@ -13,7 +13,7 @@ public class TodoHighlightingConfigurator extends HighlightingConfigurator {
 		DONE("DONE", "^\\/ .*", "done"), //
 		QUESTIONABLE("QUESTIONABLE", "^\\? .*", "questionable"), //
 		RESULT("RESULT", "^> .*", "result"), //
-		SEARCHED("SEARCHED", "\\b(searched)\\b", "searched");
+		SEARCHED("SEARCHED", "\\b(__searched_text__)\\b", "searched");
 		
 		private String name;
 		private String regex;

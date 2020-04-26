@@ -1,4 +1,4 @@
-package net.jfabricationgames.todo.frame.button;
+package net.jfabricationgames.todo.commands.button;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.util.List;
 
 import javafx.stage.FileChooser;
+import net.jfabricationgames.todo.commands.AbstractButtonCommand;
+import net.jfabricationgames.todo.commands.ButtonCommand;
 import net.jfabricationgames.todo.frame.TodoFrameController;
 import net.jfabricationgames.todo.frame.TodoTabController;
 import net.jfabricationgames.todo.frame.util.DialogUtils;
@@ -58,7 +60,7 @@ public class OpenButtonCommand extends AbstractButtonCommand implements ButtonCo
 	}
 	
 	private void insertNewTab(File file, String name, String content) {
-		TodoTabController tabController = GuiUtils.loadTab(controller);
+		TodoTabController tabController = GuiUtils.loadTab(controller, controller);
 		tabController.setFile(file);
 		tabController.getTab().setText(name);
 		tabController.setText(content);
