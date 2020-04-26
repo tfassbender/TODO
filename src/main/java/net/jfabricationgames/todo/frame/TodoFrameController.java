@@ -16,8 +16,10 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 import net.jfabricationgames.todo.commands.AbstractButtonCommand;
 import net.jfabricationgames.todo.commands.ButtonCommand;
+import net.jfabricationgames.todo.commands.SaveTabCommand;
 import net.jfabricationgames.todo.commands.button.CloseAllButtonCommand;
 import net.jfabricationgames.todo.commands.button.CloseButtonCommand;
 import net.jfabricationgames.todo.commands.button.NewButtonCommand;
@@ -25,6 +27,7 @@ import net.jfabricationgames.todo.commands.button.OpenButtonCommand;
 import net.jfabricationgames.todo.commands.button.SaveAllButtonCommand;
 import net.jfabricationgames.todo.commands.button.SaveButtonCommand;
 import net.jfabricationgames.todo.commands.button.SettingsButtonCommand;
+import net.jfabricationgames.todo.frame.util.DialogUtils;
 
 public class TodoFrameController implements Initializable {
 	
@@ -172,7 +175,9 @@ public class TodoFrameController implements Initializable {
 	private void addWindowClosingListeners() {
 		Platform.runLater(() -> {
 			getWindow().setOnCloseRequest(e -> {
-				properties.setFiles(getAllTabControllers().stream().map(TodoTabController::getFile).collect(Collectors.toList()));
+				new SaveBeforeClosingCommand(e).execute();
+				properties.setFiles(
+						getAllTabControllers().stream().map(TodoTabController::getFile).filter(file -> file != null).collect(Collectors.toList()));
 				properties.setWindowPosition(getWindow());
 				properties.store();
 			});
@@ -204,6 +209,36 @@ public class TodoFrameController implements Initializable {
 		@Override
 		public void execute() {
 			openFileAsTodo(file);
+		}
+	}
+	
+	public class SaveBeforeClosingCommand extends AbstractButtonCommand implements ButtonCommand {
+		
+		private WindowEvent windowClosingEvent;
+		
+		private boolean abortClose = false;
+		
+		public SaveBeforeClosingCommand(WindowEvent windowClosingEvent) {
+			super(null);
+			this.windowClosingEvent = windowClosingEvent;
+		}
+		
+		@Override
+		public void execute() {
+			for (TodoTabController controller : getAllTabControllers()) {
+				if (!abortClose) {
+					if (controller.isTextChanged()) {
+						DialogUtils.showConfirmationDialog_YesNoCancel("Save before closing?",
+								"The TODO has changed:\n" + controller.getTab().getText(), "Do you want to save before closing?", //
+								() -> new SaveTabCommand(TodoFrameController.this, controller).execute(), // yes -> save the tab
+								null, // no -> don't do anything
+								() -> {// cancel -> consume the window closing event and abort the dialogs
+									windowClosingEvent.consume();
+									abortClose = true;
+								});
+					}
+				}
+			}
 		}
 	}
 }
