@@ -47,8 +47,10 @@ public class TodoFrameController implements Initializable {
 	private Button buttonSettings;
 	@FXML
 	private TextField textAreaSearch;
-	@FXML
-	private Button buttonSearch;
+    @FXML
+    private Button buttonSearchNext;
+    @FXML
+    private Button buttonSearchPreviouse;
 	@FXML
 	private TabPane tabView;
 	
