@@ -1,0 +1,40 @@
+import org.gradle.plugins.ide.eclipse.model.AccessRule
+apply plugin: 'java'
+apply plugin: 'eclipse'
+ 
+jar {
+    manifest {
+    	attributes 'Implementation-Title': 'Foobar',
+                   'Implementation-Version': version,
+                   'Built-By': System.getProperty('user.name'),
+                   'Built-Date': new Date(),
+                   'Built-JDK': System.getProperty('java.version'),
+                   'Main-Class': 'net.jfabricationgames.todo.frame.TodoFrameApplication'
+    }    
+    
+    from(configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }) {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+
+}
+ 
+eclipse {
+    classpath {
+        file {
+            whenMerged {
+                def jre = entries.find { it.path.contains 'org.eclipse.jdt.launching.JRE_CONTAINER' }
+                jre.accessRules.add(new AccessRule('0', 'javafx/**'))
+            }
+        }
+    }
+}
+ 
+repositories {
+	jcenter()
+    mavenCentral()
+}
+dependencies {
+	implementation "org.fxmisc.richtext:richtextfx:0.10.5"
+}
