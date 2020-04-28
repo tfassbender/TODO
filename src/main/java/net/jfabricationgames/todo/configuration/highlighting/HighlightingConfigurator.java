@@ -39,6 +39,10 @@ public class HighlightingConfigurator implements CodeAreaConfiguator {
 		codeArea.textProperty().addListener((obs, oldText, newText) -> codeArea.setStyleSpans(0, computeHighlighting(newText)));
 	}
 	
+	public Pattern getPattern() {
+		return pattern;
+	}
+	
 	/**
 	 * Add a new highlighting to the configurator by providing a name, a regex and the css class
 	 * 
@@ -92,7 +96,7 @@ public class HighlightingConfigurator implements CodeAreaConfiguator {
 	 * 		
 	 * @return The {@link StyleSpans} for styling the {@link CodeArea}'s text
 	 */
-	private StyleSpans<Collection<String>> computeHighlighting(String text) {
+	protected StyleSpans<Collection<String>> computeHighlighting(String text) {
 		Matcher matcher = pattern.matcher(text);
 		int lastKwEnd = 0;
 		StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
@@ -106,6 +110,7 @@ public class HighlightingConfigurator implements CodeAreaConfiguator {
 				
 				//if a group is matched -> set the style class
 				if (matcher.group(name) != null) {
+					groupMatched(name);
 					styleClass = cssClass;
 				}
 			}
@@ -119,5 +124,9 @@ public class HighlightingConfigurator implements CodeAreaConfiguator {
 		}
 		spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
 		return spansBuilder.create();
+	}
+	
+	protected void groupMatched(String name) {
+		//can be used in subclasses
 	}
 }

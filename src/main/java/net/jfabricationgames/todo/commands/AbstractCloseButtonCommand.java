@@ -1,6 +1,5 @@
 package net.jfabricationgames.todo.commands;
 
-import net.jfabricationgames.todo.commands.button.SaveButtonCommand;
 import net.jfabricationgames.todo.frame.TodoFrameController;
 import net.jfabricationgames.todo.frame.TodoTabController;
 import net.jfabricationgames.todo.frame.util.DialogUtils;
@@ -24,7 +23,7 @@ public abstract class AbstractCloseButtonCommand extends AbstractButtonCommand i
 	}
 	
 	protected void saveAndClose(TodoTabController tabController) {
-		new SaveButtonCommand(controller).execute();
+		new SaveTabCommand(controller, tabController).execute();
 		close(tabController);
 	}
 	
