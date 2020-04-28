@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.stage.Window;
 import net.jfabricationgames.todo.commands.button.CloseAllButtonCommand;
 import net.jfabricationgames.todo.commands.button.CloseButtonCommand;
@@ -53,6 +54,7 @@ public class TodoFrameController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		insertInitialTab();
 		addButtonCommands();
+		addButtonTooltips();
 	}
 	
 	/**
@@ -147,5 +149,22 @@ public class TodoFrameController implements Initializable {
 		buttonCloseAll.setOnAction(e -> closeAllButtonCommand.execute());
 		SettingsButtonCommand settingsButtonCommand = new SettingsButtonCommand(this);
 		buttonSettings.setOnAction(e -> settingsButtonCommand.execute());
+	}
+	
+	private void addButtonTooltips() {
+		Tooltip newButtonTooltip = new Tooltip("New TODO (Ctrl + N)");
+		buttonNew.setTooltip(newButtonTooltip);
+		Tooltip openButtonTooltip = new Tooltip("Open TODO (Ctrl + O)");
+		buttonOpen.setTooltip(openButtonTooltip);
+		Tooltip saveButtonTooltip = new Tooltip("Save (Ctrl + S)");
+		buttonSave.setTooltip(saveButtonTooltip);
+		Tooltip saveAllButtonTooltip = new Tooltip("Save All (Ctrl + Shift + S)");
+		buttonSaveAll.setTooltip(saveAllButtonTooltip);
+		Tooltip closeButtonTooltip = new Tooltip("Close (Ctrl + W)");
+		buttonClose.setTooltip(closeButtonTooltip);
+		Tooltip closeAllTooltip = new Tooltip("Close All");
+		buttonCloseAll.setTooltip(closeAllTooltip);
+		Tooltip settingsTooltip = new Tooltip("Open Settings Dialog");
+		buttonSettings.setTooltip(settingsTooltip);
 	}
 }
