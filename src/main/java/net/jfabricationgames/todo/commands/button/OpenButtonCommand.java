@@ -7,6 +7,7 @@ import javafx.stage.FileChooser;
 import net.jfabricationgames.todo.commands.AbstractButtonCommand;
 import net.jfabricationgames.todo.commands.ButtonCommand;
 import net.jfabricationgames.todo.frame.TodoFrameController;
+import net.jfabricationgames.todo.frame.TodoTabController;
 
 public class OpenButtonCommand extends AbstractButtonCommand implements ButtonCommand {
 	
@@ -26,7 +27,13 @@ public class OpenButtonCommand extends AbstractButtonCommand implements ButtonCo
 			fileChooser.setInitialDirectory(lastOpened.getParentFile());
 		}
 		else {
-			fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+			File defaultDir = new File(TodoTabController.DEFAULT_FILE_DIR);
+			if (defaultDir.exists()) {
+				fileChooser.setInitialDirectory(defaultDir);
+			}
+			else {
+				fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+			}
 		}
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("TODO files (*.todo)", "*.todo"));
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt"));
