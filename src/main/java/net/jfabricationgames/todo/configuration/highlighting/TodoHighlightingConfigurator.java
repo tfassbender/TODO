@@ -8,11 +8,11 @@ public class TodoHighlightingConfigurator extends HighlightingConfigurator {
 		HEADLINE_2("HEADLINE2", "^## .*", "headline2"), //
 		HEADLINE_3("HEADLINE3", "^### .*", "headline3"), //
 		HEADLINE_4("HEADLINE4", "^#### .*", "headline4"), //
-		IMPORTANT("IMPORTANT", "^! .*", "important"), //
-		COMMENT("COMMENT", "^\\/\\/ .*", "comment"), //
-		DONE("DONE", "^\\/ .*", "done"), //
-		QUESTIONABLE("QUESTIONABLE", "^\\? .*", "questionable"), //
-		RESULT("RESULT", "^> .*", "result"), //
+		IMPORTANT("IMPORTANT", "^( |\\t)*! .*", "important"), //
+		COMMENT("COMMENT", "^( |\\t)*\\/\\/ .*", "comment"), //
+		DONE("DONE", "^( |\\t)*\\/ .*", "done"), //
+		QUESTIONABLE("QUESTIONABLE", "^( |\\t)*\\? .*", "questionable"), //
+		RESULT("RESULT", "^( |\\t)*> .*", "result"), //
 		SEARCHED("SEARCHED", "\\b(__searched_text__)\\b", "searched");
 		
 		private String name;
