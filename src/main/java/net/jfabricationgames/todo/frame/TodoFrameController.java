@@ -14,6 +14,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
@@ -67,6 +69,7 @@ public class TodoFrameController implements Initializable {
 		loadTabs();
 		insertInitialTab();
 		addButtonCommands();
+		addButtonTooltips();
 		addWindowClosingListeners();
 		adjustWindowPosition();
 		chooseInitialSelectedTab();
@@ -173,6 +176,31 @@ public class TodoFrameController implements Initializable {
 		buttonCloseAll.setOnAction(e -> closeAllButtonCommand.execute());
 		SettingsButtonCommand settingsButtonCommand = new SettingsButtonCommand(this);
 		buttonSettings.setOnAction(e -> settingsButtonCommand.execute());
+	}
+	
+	private void addButtonTooltips() {
+		Font tooltipFont = new Font(12);
+		Tooltip newButtonTooltip = new Tooltip("New TODO (Ctrl + N)");
+		newButtonTooltip.setFont(tooltipFont);
+		buttonNew.setTooltip(newButtonTooltip);
+		Tooltip openButtonTooltip = new Tooltip("Open TODO (Ctrl + O)");
+		openButtonTooltip.setFont(tooltipFont);
+		buttonOpen.setTooltip(openButtonTooltip);
+		Tooltip saveButtonTooltip = new Tooltip("Save (Ctrl + S)");
+		saveButtonTooltip.setFont(tooltipFont);
+		buttonSave.setTooltip(saveButtonTooltip);
+		Tooltip saveAllButtonTooltip = new Tooltip("Save All (Ctrl + Shift + S)");
+		saveAllButtonTooltip.setFont(tooltipFont);
+		buttonSaveAll.setTooltip(saveAllButtonTooltip);
+		Tooltip closeButtonTooltip = new Tooltip("Close (Ctrl + W)");
+		closeButtonTooltip.setFont(tooltipFont);
+		buttonClose.setTooltip(closeButtonTooltip);
+		Tooltip closeAllTooltip = new Tooltip("Close All");
+		closeAllTooltip.setFont(tooltipFont);
+		buttonCloseAll.setTooltip(closeAllTooltip);
+		Tooltip settingsTooltip = new Tooltip("Open Settings Dialog");
+		settingsTooltip.setFont(tooltipFont);
+		buttonSettings.setTooltip(settingsTooltip);
 	}
 	
 	private void addWindowClosingListeners() {
