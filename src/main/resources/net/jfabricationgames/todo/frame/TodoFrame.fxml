@@ -125,7 +125,7 @@
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin></TextField>
-            <TabPane fx:id="tabView" prefHeight="200.0" prefWidth="617.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnSpan="4" GridPane.rowIndex="1" />
+            <TabPane fx:id="tabView" prefHeight="200.0" prefWidth="617.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnSpan="7" GridPane.rowIndex="1" />
             <Button fx:id="buttonSearchNext" mnemonicParsing="false" GridPane.columnIndex="5">
                <graphic>
                   <ImageView>
