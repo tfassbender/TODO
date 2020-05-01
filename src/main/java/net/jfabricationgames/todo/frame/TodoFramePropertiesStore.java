@@ -64,7 +64,7 @@ public class TodoFramePropertiesStore {
 	public void adjustWindowPosition(Window window) {
 		double x = Double.parseDouble(properties.getProperty(PROPERTY_WINDOW_X, "200"));
 		double y = Double.parseDouble(properties.getProperty(PROPERTY_WINDOW_Y, "200"));
-		double width = Double.parseDouble(properties.getProperty(PROPERTY_WINDOW_WIDTH, "800"));
+		double width = Double.parseDouble(properties.getProperty(PROPERTY_WINDOW_WIDTH, "900"));
 		double height = Double.parseDouble(properties.getProperty(PROPERTY_WINDOW_HEIGHT, "600"));
 		boolean maximized = Boolean.parseBoolean(properties.getProperty(PROPERTY_WINDOW_MAXIMIZED, "false"));
 		
