@@ -39,6 +39,7 @@ public abstract class AbstractButtonCommand implements ButtonCommand {
 		tabController.setFile(file);
 		tabController.getTab().setText(name);
 		tabController.setText(content);
+		tabController.assumeTextSaved();
 		this.controller.addTab(tabController);
 		
 		return tabController;

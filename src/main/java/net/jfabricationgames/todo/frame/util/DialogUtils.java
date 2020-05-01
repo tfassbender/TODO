@@ -71,34 +71,26 @@ public abstract class DialogUtils {
 	}
 	
 	public static void showConfirmationDialog(String title, String hint, String text, Runnable onConfirm, Runnable onCancel) {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle(title);
-		alert.setHeaderText(hint);
-		alert.setContentText(text);
-		
-		Optional<ButtonType> result = alert.showAndWait();
+		Optional<ButtonType> result = showConfirmationDialog(title, hint, text);
 		
 		if (result.isPresent() && result.get() == ButtonType.OK) {
-			onConfirm.run();
+			if (onConfirm != null) {
+				onConfirm.run();
+			}
 		}
 		else {
-			onCancel.run();
+			if (onCancel != null) {
+				onCancel.run();
+			}
 		}
 	}
 	
 	public static void showConfirmationDialog_YesNoCancel(String title, String hint, String text, Runnable onYes, Runnable onNo, Runnable onCancel) {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		
-		ButtonType okButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-		ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
-		ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-		alert.getButtonTypes().setAll(okButton, noButton, cancelButton);
-		
-		alert.setTitle(title);
-		alert.setHeaderText(hint);
-		alert.setContentText(text);
-		
-		Optional<ButtonType> result = alert.showAndWait();
+		showConfirmationDialog_ThreeOptions(title, hint, text, "Yes", "No", "Cancel", onYes, onNo, onCancel);
+	}
+	public static void showConfirmationDialog_ThreeOptions(String title, String hint, String text, String buttonTextYes, String buttonTextNo,
+			String buttonTextCancel, Runnable onYes, Runnable onNo, Runnable onCancel) {
+		Optional<ButtonType> result = showConfirmationDialog_ThreeOptions(title, hint, text, buttonTextYes, buttonTextNo, buttonTextCancel);
 		
 		if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.YES) {
 			if (onYes != null) {
@@ -118,11 +110,15 @@ public abstract class DialogUtils {
 	}
 	
 	public static Optional<ButtonType> showConfirmationDialog_YesNoCancel(String title, String hint, String text) {
+		return showConfirmationDialog_ThreeOptions(title, hint, text, "Yes", "No", "Cancel");
+	}
+	public static Optional<ButtonType> showConfirmationDialog_ThreeOptions(String title, String hint, String text, String buttonTextYes,
+			String buttonTextNo, String buttonTextCancel) {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		
-		ButtonType okButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-		ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
-		ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+		ButtonType okButton = new ButtonType(buttonTextYes, ButtonBar.ButtonData.YES);
+		ButtonType noButton = new ButtonType(buttonTextNo, ButtonBar.ButtonData.NO);
+		ButtonType cancelButton = new ButtonType(buttonTextCancel, ButtonBar.ButtonData.CANCEL_CLOSE);
 		alert.getButtonTypes().setAll(okButton, noButton, cancelButton);
 		
 		alert.setTitle(title);

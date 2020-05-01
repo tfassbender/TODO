@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -14,6 +15,7 @@ import org.fxmisc.richtext.CodeArea;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Tab;
+import net.jfabricationgames.todo.commands.button.CloseButtonCommand;
 import net.jfabricationgames.todo.configuration.CodeAreaConfiguator;
 import net.jfabricationgames.todo.configuration.TabConfigurator;
 import net.jfabricationgames.todo.configuration.highlighting.ParagraphConfigurator;
@@ -34,14 +36,53 @@ public class TodoTabController implements Initializable {
 	@FXML
 	private CodeArea codeArea;
 	
+	private TodoFrameController frameController;
+	
 	private Tab tab;
 	private File file;
 	private String lastSavedText;
+	private String ignoredFileChanges;
+	private boolean displayingReloadDialog;
 	
 	public TodoTabController(TodoFrameController frameController) {
+		this.frameController = frameController;
 		highlightingConfigurator = new TodoHighlightingConfigurator();
 		configurators = Arrays.asList(highlightingConfigurator, new ParagraphConfigurator(), new TodoHotkeyConfigurator(frameController));
 		tabConfigurators = Arrays.asList(new TabIconConfigurator(this));
+	}
+	
+	//***********************************************************************************
+	//*** properties
+	//***********************************************************************************
+	
+	public void requestFocusOnCodeArea() {
+		codeArea.requestFocus();
+	}
+	
+	public void setText(String content) {
+		codeArea.replaceText(content);
+	}
+	
+	public Tab getTab() {
+		return tab;
+	}
+	public void setTab(Tab tab) {
+		this.tab = tab;
+	}
+	
+	public File getFile() {
+		return file;
+	}
+	public void setFile(File file) {
+		this.file = file;
+	}
+	
+	public CodeArea getCodeArea() {
+		return codeArea;
+	}
+	
+	public TodoHighlightingConfigurator getHighlightingConfigurator() {
+		return highlightingConfigurator;
 	}
 	
 	//***********************************************************************************
@@ -52,6 +93,7 @@ public class TodoTabController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		configureCodeArea();
 		configureTab();
+		addFileConsistencyListener();
 	}
 	
 	/**
@@ -119,34 +161,23 @@ public class TodoTabController implements Initializable {
 		lastSavedText = codeArea.getText();
 	}
 	
-	public void requestFocusOnCodeArea() {
-		codeArea.requestFocus();
-	}
-	
-	public void setText(String content) {
-		codeArea.replaceText(content);
-	}
-	
-	public Tab getTab() {
-		return tab;
-	}
-	public void setTab(Tab tab) {
-		this.tab = tab;
-	}
-	
-	public File getFile() {
-		return file;
-	}
-	public void setFile(File file) {
-		this.file = file;
-	}
-	
-	public CodeArea getCodeArea() {
-		return codeArea;
-	}
-	
-	public TodoHighlightingConfigurator getHighlightingConfigurator() {
-		return highlightingConfigurator;
+	/**
+	 * Reload the content from the .todo file into the editor
+	 */
+	public void reloadFileContent() {
+		String content;
+		try {
+			content = new String(Files.readAllBytes(file.toPath()));
+			int caretPosition = codeArea.getCaretPosition();
+			codeArea.replaceText(content);
+			codeArea.moveTo(Math.min(caretPosition, content.length()));
+			assumeTextSaved();
+			ignoredFileChanges = null;
+		}
+		catch (IOException e) {
+			DialogUtils.showErrorDialog("Couldn't open file", "The file couldn't be opened:\n" + file.getAbsolutePath(), e.getMessage(), true);
+			return;
+		}
 	}
 	
 	//***********************************************************************************
@@ -163,6 +194,53 @@ public class TodoTabController implements Initializable {
 		for (TabConfigurator configurator : tabConfigurators) {
 			configurator.configure(getTab());
 		}
+	}
+	
+	private void addFileConsistencyListener() {
+		codeArea.focusedProperty().addListener((observable, oldState, newState) -> {
+			if (newState) {
+				checkFileConsistency();
+			}
+		});
+	}
+	
+	/**
+	 * Check whether the file has been modified by another program
+	 */
+	private void checkFileConsistency() {
+		String content;
+		try {
+			content = new String(Files.readAllBytes(file.toPath()));
+		}
+		catch (IOException e) {
+			//ignore the exception and assume the file as unchanged
+			return;
+		}
+		
+		if (!displayingReloadDialog && !content.equals(lastSavedText) && !content.equals(ignoredFileChanges)) {
+			//the file has been changed -> let the user choose whether it shall be reloaded
+			displayingReloadDialog = true;
+			DialogUtils.showConfirmationDialog_ThreeOptions("TODO file has changed", "The file has been changed by another application",
+					"Do you want to load the new content to the editor?", // dialog texts
+					"Yes", "No", "Close TODO",// button texts
+					() -> { // on yes
+						reloadFileContent();
+						displayingReloadDialog = false;
+					}, //
+					() -> { // on no
+						setIgnoredFileChanges(content);
+						displayingReloadDialog = false;
+					}, //
+					() -> { //on close
+						setIgnoredFileChanges(content);
+						new CloseButtonCommand(frameController).execute();
+						displayingReloadDialog = false;
+					});
+		}
+	}
+	
+	private void setIgnoredFileChanges(String ignoredFileChanges) {
+		this.ignoredFileChanges = ignoredFileChanges;
 	}
 	
 	/**
