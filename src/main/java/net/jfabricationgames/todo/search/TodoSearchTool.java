@@ -93,6 +93,7 @@ public class TodoSearchTool {
 			tabControllerOptional.ifPresent(tabController -> {
 				tabController.getCodeArea().selectRange(pos, pos + length);
 				tabController.requestFocusOnCodeArea();
+				tabController.getCodeArea().requestFollowCaret();
 			});
 		}
 	}
