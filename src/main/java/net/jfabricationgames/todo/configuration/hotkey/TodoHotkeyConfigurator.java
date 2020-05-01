@@ -5,6 +5,7 @@ import javafx.scene.input.KeyCombination;
 import net.jfabricationgames.todo.commands.button.CloseButtonCommand;
 import net.jfabricationgames.todo.commands.button.NewButtonCommand;
 import net.jfabricationgames.todo.commands.button.OpenButtonCommand;
+import net.jfabricationgames.todo.commands.button.ReloadFileButtonCommand;
 import net.jfabricationgames.todo.commands.button.SaveAllButtonCommand;
 import net.jfabricationgames.todo.commands.button.SaveButtonCommand;
 import net.jfabricationgames.todo.commands.hotkey.DeleteLineCommand;
@@ -27,6 +28,7 @@ public class TodoHotkeyConfigurator extends HotkeyConfigurator {
 				new SaveAllButtonCommand(controller));
 		addHotkey("NEW", new HotkeyCombination(KeyCode.N, KeyCombination.CONTROL_DOWN), new NewButtonCommand(controller));
 		addHotkey("OPEN", new HotkeyCombination(KeyCode.O, KeyCombination.CONTROL_DOWN), new OpenButtonCommand(controller));
+		addHotkey("RELOAD", new HotkeyCombination(KeyCode.R, KeyCombination.CONTROL_DOWN), new ReloadFileButtonCommand(controller));
 		addHotkey("CLOSE_TAB", new HotkeyCombination(KeyCode.W, KeyCombination.CONTROL_DOWN), new CloseButtonCommand(controller));
 		
 		//editor controls

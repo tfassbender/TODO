@@ -27,6 +27,7 @@ import net.jfabricationgames.todo.commands.button.CloseAllButtonCommand;
 import net.jfabricationgames.todo.commands.button.CloseButtonCommand;
 import net.jfabricationgames.todo.commands.button.NewButtonCommand;
 import net.jfabricationgames.todo.commands.button.OpenButtonCommand;
+import net.jfabricationgames.todo.commands.button.ReloadFileButtonCommand;
 import net.jfabricationgames.todo.commands.button.SaveAllButtonCommand;
 import net.jfabricationgames.todo.commands.button.SaveButtonCommand;
 import net.jfabricationgames.todo.commands.button.SearchDialogButtonCommand;
@@ -44,6 +45,8 @@ public class TodoFrameController implements Initializable {
 	private Button buttonSave;
 	@FXML
 	private Button buttonSaveAll;
+	@FXML
+	private Button buttonReload;
 	@FXML
 	private Button buttonClose;
 	@FXML
@@ -186,6 +189,8 @@ public class TodoFrameController implements Initializable {
 		buttonSave.setOnAction(e -> saveButtonCommand.execute());
 		SaveAllButtonCommand saveAllButtonCommand = new SaveAllButtonCommand(this);
 		buttonSaveAll.setOnAction(e -> saveAllButtonCommand.execute());
+		ReloadFileButtonCommand reloadFileButtonCommand = new ReloadFileButtonCommand(this);
+		buttonReload.setOnAction(e -> reloadFileButtonCommand.execute());
 		CloseButtonCommand closeButtonCommand = new CloseButtonCommand(this);
 		buttonClose.setOnAction(e -> closeButtonCommand.execute());
 		CloseAllButtonCommand closeAllButtonCommand = new CloseAllButtonCommand(this);
@@ -208,6 +213,9 @@ public class TodoFrameController implements Initializable {
 		Tooltip saveAllButtonTooltip = new Tooltip("Save All (Ctrl + Shift + S)");
 		saveAllButtonTooltip.setFont(tooltipFont);
 		buttonSaveAll.setTooltip(saveAllButtonTooltip);
+		Tooltip reloadFileButtonTooltip = new Tooltip("Reload from Disk (Ctrl + R)");
+		reloadFileButtonTooltip.setFont(tooltipFont);
+		buttonReload.setTooltip(reloadFileButtonTooltip);
 		Tooltip closeButtonTooltip = new Tooltip("Close (Ctrl + W)");
 		closeButtonTooltip.setFont(tooltipFont);
 		buttonClose.setTooltip(closeButtonTooltip);
