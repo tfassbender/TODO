@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -14,11 +15,13 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <GridPane layoutX="-98.0" layoutY="-50.0" prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane layoutX="-98.0" layoutY="-50.0" prefHeight="600.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="400.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" />
             <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="10.0" />
             <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="10.0" />
         </columnConstraints>
@@ -123,7 +126,7 @@
                   <Insets right="10.0" />
                </GridPane.margin></TextField>
             <TabPane fx:id="tabView" prefHeight="200.0" prefWidth="617.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnSpan="4" GridPane.rowIndex="1" />
-            <Button fx:id="buttonSearchNext" mnemonicParsing="false" GridPane.columnIndex="3">
+            <Button fx:id="buttonSearchNext" mnemonicParsing="false" GridPane.columnIndex="5">
                <graphic>
                   <ImageView>
                      <image>
@@ -135,7 +138,7 @@
                   <Insets right="5.0" />
                </GridPane.margin>
             </Button>
-            <Button fx:id="buttonSearchPreviouse" mnemonicParsing="false" GridPane.columnIndex="4">
+            <Button fx:id="buttonSearchPrevious" mnemonicParsing="false" GridPane.columnIndex="6">
                <graphic>
                   <ImageView>
                      <image>
@@ -147,6 +150,23 @@
                   <Insets right="5.0" />
                </GridPane.margin>
             </Button>
+            <Button fx:id="buttonSearchDialog" mnemonicParsing="false" GridPane.columnIndex="4">
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../buttons/icon_search_small.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <CheckBox fx:id="checkBoxRegex" mnemonicParsing="false" text="Regex" GridPane.columnIndex="3">
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+            </CheckBox>
          </children>
       </GridPane>
    </children>

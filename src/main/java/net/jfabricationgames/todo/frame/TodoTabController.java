@@ -27,6 +27,7 @@ public class TodoTabController implements Initializable {
 	public static final String TODO_TAB_FXML = "/net/jfabricationgames/todo/frame/TodoTab.fxml";
 	public static final String DEFAULT_FILE_DIR = "TODOs/";
 	
+	private final TodoHighlightingConfigurator highlightingConfigurator;
 	private final List<CodeAreaConfiguator> configurators;
 	private final List<TabConfigurator> tabConfigurators;
 	
@@ -38,7 +39,8 @@ public class TodoTabController implements Initializable {
 	private String lastSavedText;
 	
 	public TodoTabController(TodoFrameController frameController) {
-		configurators = Arrays.asList(new TodoHighlightingConfigurator(), new ParagraphConfigurator(), new TodoHotkeyConfigurator(frameController));
+		highlightingConfigurator = new TodoHighlightingConfigurator();
+		configurators = Arrays.asList(highlightingConfigurator, new ParagraphConfigurator(), new TodoHotkeyConfigurator(frameController));
 		tabConfigurators = Arrays.asList(new TabIconConfigurator(this));
 	}
 	
@@ -141,6 +143,10 @@ public class TodoTabController implements Initializable {
 	
 	public CodeArea getCodeArea() {
 		return codeArea;
+	}
+	
+	public TodoHighlightingConfigurator getHighlightingConfigurator() {
+		return highlightingConfigurator;
 	}
 	
 	//***********************************************************************************

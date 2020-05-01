@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -28,8 +29,10 @@ import net.jfabricationgames.todo.commands.button.NewButtonCommand;
 import net.jfabricationgames.todo.commands.button.OpenButtonCommand;
 import net.jfabricationgames.todo.commands.button.SaveAllButtonCommand;
 import net.jfabricationgames.todo.commands.button.SaveButtonCommand;
+import net.jfabricationgames.todo.commands.button.SearchDialogButtonCommand;
 import net.jfabricationgames.todo.commands.button.SettingsButtonCommand;
 import net.jfabricationgames.todo.frame.util.DialogUtils;
+import net.jfabricationgames.todo.search.TodoSearchTool;
 
 public class TodoFrameController implements Initializable {
 	
@@ -49,10 +52,14 @@ public class TodoFrameController implements Initializable {
 	private Button buttonSettings;
 	@FXML
 	private TextField textAreaSearch;
-    @FXML
-    private Button buttonSearchNext;
-    @FXML
-    private Button buttonSearchPreviouse;
+	@FXML
+	private Button buttonSearchDialog;
+	@FXML
+	private Button buttonSearchNext;
+	@FXML
+	private Button buttonSearchPrevious;
+	@FXML
+	private CheckBox checkBoxRegex;
 	@FXML
 	private TabPane tabView;
 	
@@ -60,16 +67,25 @@ public class TodoFrameController implements Initializable {
 	
 	private TodoFramePropertiesStore properties = new TodoFramePropertiesStore();
 	
+	private TodoSearchTool searchTool;
+	
+	public TextField getTextAreaSearch() {
+		return textAreaSearch;
+	}
+	
 	//***********************************************************************************
 	//*** public
 	//***********************************************************************************
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		searchTool = new TodoSearchTool(this);
+		
 		loadTabs();
 		insertInitialTab();
 		addButtonCommands();
 		addButtonTooltips();
+		addSearchCommands();
 		addWindowClosingListeners();
 		adjustWindowPosition();
 		chooseInitialSelectedTab();
@@ -201,6 +217,25 @@ public class TodoFrameController implements Initializable {
 		Tooltip settingsTooltip = new Tooltip("Open Settings Dialog");
 		settingsTooltip.setFont(tooltipFont);
 		buttonSettings.setTooltip(settingsTooltip);
+		Tooltip searchTooltip = new Tooltip("Open Search Dialog (Ctrl + Shift + F)");
+		searchTooltip.setFont(tooltipFont);
+		buttonSearchDialog.setTooltip(searchTooltip);
+	}
+	
+	private void addSearchCommands() {
+		SearchDialogButtonCommand searchDialogButtonCommand = new SearchDialogButtonCommand(this);
+		buttonSearchDialog.setOnAction(e -> searchDialogButtonCommand.execute());
+		
+		buttonSearchNext.setOnAction(e -> searchTool.getNextOccurenceButtonCommand().execute());
+		buttonSearchPrevious.setOnAction(e -> searchTool.getPreviousOccurenceButtonCommand().execute());
+		
+		textAreaSearch.textProperty().addListener((observer, oldText, newText) -> searchTool.setSearchedPhrase(newText));
+		textAreaSearch.setOnAction(e -> searchTool.toNextOccurrence());
+		
+		checkBoxRegex.setOnAction(e -> {
+			searchTool.setUseRegexSearch(checkBoxRegex.isSelected());
+			searchTool.highlightSearchedPhrase();
+		});
 	}
 	
 	private void addWindowClosingListeners() {

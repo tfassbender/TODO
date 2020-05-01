@@ -11,7 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import net.jfabricationgames.todo.frame.TodoFrameController;
 import net.jfabricationgames.todo.frame.TodoTabController;
 
-public class GuiUtils {
+public abstract class GuiUtils {
 	
 	/**
 	 * Load an fxml pane into an anchor pane with a loader object (any object) for the relative path

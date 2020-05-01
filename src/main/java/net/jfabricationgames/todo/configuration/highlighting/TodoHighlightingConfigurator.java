@@ -12,8 +12,7 @@ public class TodoHighlightingConfigurator extends HighlightingConfigurator {
 		COMMENT("COMMENT", "^( |\\t)*\\/\\/ .*", "comment"), //
 		DONE("DONE", "^( |\\t)*\\/ .*", "done"), //
 		QUESTIONABLE("QUESTIONABLE", "^( |\\t)*\\? .*", "questionable"), //
-		RESULT("RESULT", "^( |\\t)*> .*", "result"), //
-		SEARCHED("SEARCHED", "\\b(__searched_text__)\\b", "searched");
+		RESULT("RESULT", "^( |\\t)*> .*", "result");
 		
 		private String name;
 		private String regex;

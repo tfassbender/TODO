@@ -43,6 +43,10 @@
 }
 
 .searched {
-	-rtfx-background-color: #6d8aa5;
+	-rtfx-background-color: #a0a0a0;
 	-fx-fill: yellow;
+}
+
+.regexError {
+	-fx-text-fill: red;
 }
