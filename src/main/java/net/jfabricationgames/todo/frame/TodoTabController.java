@@ -171,6 +171,11 @@ public class TodoTabController implements Initializable {
 			int caretPosition = codeArea.getCaretPosition();
 			codeArea.replaceText(content);
 			codeArea.moveTo(Math.min(caretPosition, content.length()));
+			
+			//trigger highlighting
+			codeArea.insert(0, " ", "");
+			codeArea.replace(0, 1, "", "");
+			
 			assumeTextSaved();
 			ignoredFileChanges = null;
 		}
