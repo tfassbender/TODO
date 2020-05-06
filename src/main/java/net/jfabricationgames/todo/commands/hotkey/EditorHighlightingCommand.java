@@ -52,9 +52,25 @@ public class EditorHighlightingCommand extends AbstractButtonCommand implements 
 			int[] selectedLineTextIndices = getSelectedLineTextIndices(codeArea);
 			
 			String selectedText = codeArea.getText().substring(selectedLineTextIndices[0], selectedLineTextIndices[1]);
+			//add spaces to not ignore blank lines
+			selectedText = selectedText.replace("\n", " \n");
 			String[] lines = selectedText.split("\n");
+			//remove the spaces again to prevent index errors
+			for (int i = 0; i < lines.length; i++) {
+				if (lines[i].length() > 0 && selectedText.endsWith("\n")) {
+					lines[i] = lines[i].substring(0, lines[i].length() - 1);
+				}
+			}
 			
 			boolean allLinesStartWithHighlighting = Arrays.stream(lines).filter(line -> !line.startsWith(type.getLineStart())).count() == 0;
+			boolean markChangedLines = true;
+			
+			//if only an empty line is selected, add the highlighting without marking it
+			if (lines.length == 0 || lines.length == 1 && lines[0].equals("")) {
+				allLinesStartWithHighlighting = false;
+				markChangedLines = false;
+				lines = new String[] {""};
+			}
 			
 			int insertIndex = selectedLineTextIndices[0];
 			for (String line : lines) {
@@ -73,8 +89,10 @@ public class EditorHighlightingCommand extends AbstractButtonCommand implements 
 				}
 			}
 			
-			//re-select the text that was edited
-			codeArea.selectRange(selectedLineTextIndices[0], insertIndex - 1);
+			if (markChangedLines) {
+				//re-select the text that was edited
+				codeArea.selectRange(selectedLineTextIndices[0], insertIndex - 1);
+			}
 		}
 	}
 }
