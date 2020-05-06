@@ -28,6 +28,7 @@ public class TodoTabController implements Initializable {
 	
 	public static final String TODO_TAB_FXML = "/net/jfabricationgames/todo/frame/TodoTab.fxml";
 	public static final String DEFAULT_FILE_DIR = "TODOs/";
+	public static final int MAX_TITLE_LENGTH = 20;
 	
 	private final TodoHighlightingConfigurator highlightingConfigurator;
 	private final List<CodeAreaConfiguator> configurators;
@@ -138,10 +139,10 @@ public class TodoTabController implements Initializable {
 				firstLineEndIndex = codeArea.getText().length();
 			}
 			String name = codeArea.getText().substring(2, firstLineEndIndex);
-			tab.setText(name);
+			tab.setText(getTabName(name));
 		}
 		else if (file != null) {
-			tab.setText(file.getName().substring(0, file.getName().lastIndexOf('.')));
+			tab.setText(getTabName(file.getName().substring(0, file.getName().lastIndexOf('.'))));
 		}
 	}
 	
@@ -213,34 +214,36 @@ public class TodoTabController implements Initializable {
 	 * Check whether the file has been modified by another program
 	 */
 	private void checkFileConsistency() {
-		String content;
-		try {
-			content = new String(Files.readAllBytes(file.toPath()));
-		}
-		catch (IOException e) {
-			//ignore the exception and assume the file as unchanged
-			return;
-		}
-		
-		if (!displayingReloadDialog && !content.equals(lastSavedText) && !content.equals(ignoredFileChanges)) {
-			//the file has been changed -> let the user choose whether it shall be reloaded
-			displayingReloadDialog = true;
-			DialogUtils.showConfirmationDialog_ThreeOptions("TODO file has changed", "The file has been changed by another application",
-					"Do you want to load the new content to the editor?", // dialog texts
-					"Yes", "No", "Close TODO",// button texts
-					() -> { // on yes
-						reloadFileContent();
-						displayingReloadDialog = false;
-					}, //
-					() -> { // on no
-						setIgnoredFileChanges(content);
-						displayingReloadDialog = false;
-					}, //
-					() -> { //on close
-						setIgnoredFileChanges(content);
-						new CloseButtonCommand(frameController).execute();
-						displayingReloadDialog = false;
-					});
+		if (file != null) {
+			String content;
+			try {
+				content = new String(Files.readAllBytes(file.toPath()));
+			}
+			catch (IOException e) {
+				//ignore the exception and assume the file as unchanged
+				return;
+			}
+			
+			if (!displayingReloadDialog && !content.equals(lastSavedText) && !content.equals(ignoredFileChanges)) {
+				//the file has been changed -> let the user choose whether it shall be reloaded
+				displayingReloadDialog = true;
+				DialogUtils.showConfirmationDialog_ThreeOptions("TODO file has changed", "The file has been changed by another application",
+						"Do you want to load the new content to the editor?", // dialog texts
+						"Yes", "No", "Close TODO",// button texts
+						() -> { // on yes
+							reloadFileContent();
+							displayingReloadDialog = false;
+						}, //
+						() -> { // on no
+							setIgnoredFileChanges(content);
+							displayingReloadDialog = false;
+						}, //
+						() -> { //on close
+							setIgnoredFileChanges(content);
+							new CloseButtonCommand(frameController).execute();
+							displayingReloadDialog = false;
+						});
+			}
 		}
 	}
 	
@@ -292,5 +295,12 @@ public class TodoTabController implements Initializable {
 			postfix++;
 			file = new File(nextFileName);
 		}
+	}
+	
+	private String getTabName(String longName) {
+		if (longName.length() > MAX_TITLE_LENGTH) {
+			return longName.substring(0, MAX_TITLE_LENGTH - 3) + "...";
+		}
+		return longName;
 	}
 }
