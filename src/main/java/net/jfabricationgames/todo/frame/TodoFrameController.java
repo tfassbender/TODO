@@ -154,12 +154,28 @@ public class TodoFrameController implements Initializable {
 		requestFocusOnCurrentCodeArea();
 	}
 	
+	public void setSelectedTab(TodoTabController tabController) {
+		tabView.getSelectionModel().select(tabController.getTab());
+		requestFocusOnCurrentCodeArea();
+	}
+	
 	public void requestFocusOnCurrentCodeArea() {
 		getCurrentTabController().ifPresent(controller -> controller.requestFocusOnCodeArea());
 	}
 	
 	public void requestFocusOnSearchBar() {
 		textAreaSearch.requestFocus();
+	}
+	
+	/**
+	 * Get the TodoTabController that manages the given file (or Optional.empty() if the file is not opened in any tab)
+	 * 
+	 * @param file
+	 *        The searched file
+	 * @return The TodoTabController (as Optional) or an empty Optional
+	 */
+	public Optional<TodoTabController> getTabControllerForFile(File file) {
+		return todoTabControllers.stream().filter(controller -> controller.getFile().equals(file)).findAny();
 	}
 	
 	//***********************************************************************************

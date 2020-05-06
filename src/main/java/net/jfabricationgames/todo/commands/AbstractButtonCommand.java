@@ -3,6 +3,7 @@ package net.jfabricationgames.todo.commands;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Optional;
 
 import org.fxmisc.richtext.CodeArea;
 
@@ -21,6 +22,13 @@ public abstract class AbstractButtonCommand implements ButtonCommand {
 	}
 	
 	protected void openFileAsTodo(File file) {
+		//if the file is already opened, show the tab in which it is opened instead of opening it again in a new tab
+		Optional<TodoTabController> openedTabController = controller.getTabControllerForFile(file);
+		if (openedTabController.isPresent()) {
+			controller.setSelectedTab(openedTabController.get());
+			return;
+		}
+		
 		String content;
 		try {
 			content = new String(Files.readAllBytes(file.toPath()));
