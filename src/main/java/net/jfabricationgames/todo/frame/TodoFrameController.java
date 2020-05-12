@@ -167,6 +167,10 @@ public class TodoFrameController implements Initializable {
 		textAreaSearch.requestFocus();
 	}
 	
+	public void scrollToTop() {
+		getCurrentTabController().ifPresent(controller -> controller.scrollToTop());
+	}
+	
 	/**
 	 * Get the TodoTabController that manages the given file (or Optional.empty() if the file is not opened in any tab)
 	 * 

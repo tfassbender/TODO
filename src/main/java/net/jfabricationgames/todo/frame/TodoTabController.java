@@ -186,6 +186,13 @@ public class TodoTabController implements Initializable {
 		}
 	}
 	
+	/**
+	 * Scroll to the top of the code area
+	 */
+	public void scrollToTop() {
+		codeArea.showParagraphAtTop(0);
+	}
+	
 	//***********************************************************************************
 	//*** private
 	//***********************************************************************************

@@ -26,6 +26,7 @@ public abstract class AbstractButtonCommand implements ButtonCommand {
 		Optional<TodoTabController> openedTabController = controller.getTabControllerForFile(file);
 		if (openedTabController.isPresent()) {
 			controller.setSelectedTab(openedTabController.get());
+			controller.scrollToTop();
 			return;
 		}
 		
@@ -48,6 +49,7 @@ public abstract class AbstractButtonCommand implements ButtonCommand {
 		tabController.getTab().setText(name);
 		tabController.setText(content);
 		tabController.assumeTextSaved();
+		tabController.scrollToTop();
 		this.controller.addTab(tabController);
 		
 		return tabController;
