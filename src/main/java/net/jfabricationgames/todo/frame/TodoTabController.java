@@ -193,6 +193,11 @@ public class TodoTabController implements Initializable {
 		codeArea.showParagraphAtTop(0);
 	}
 	
+	public void refreshCodeArea() {
+		codeArea.insert(0, " ", "");
+		codeArea.replace(0, 1, "", "");
+	}
+	
 	//***********************************************************************************
 	//*** private
 	//***********************************************************************************

@@ -23,6 +23,7 @@ public class TodoFramePropertiesStore {
 	private static final String FILES_DELEMITER_REGEX = "\\|";
 	private static final String FILES_DELEMITER = "|";
 	private static final String PROPERTY_SELECTED_TAB_INDEX = "SELECTED_TAB_INDEX";
+	private static final String PROPERTY_WORD_WRAP = "WORD_WRAP_ENABLED";
 	
 	private static final String PROPERTY_WINDOW_X = "WINDOW_POS_X";
 	private static final String PROPERTY_WINDOW_Y = "WINDOW_POS_Y";
@@ -102,6 +103,14 @@ public class TodoFramePropertiesStore {
 	
 	public void setSelectedTab(int selectedTabIndex) {
 		properties.setProperty(PROPERTY_SELECTED_TAB_INDEX, Integer.toString(selectedTabIndex));
+	}
+	
+	public boolean getWordWrap() {
+		return Boolean.parseBoolean(properties.getProperty(PROPERTY_WORD_WRAP, "false"));
+	}
+	
+	public void setWordWrap(boolean selected) {
+		properties.setProperty(PROPERTY_WORD_WRAP, Boolean.toString(selected));
 	}
 	
 	public void store() {

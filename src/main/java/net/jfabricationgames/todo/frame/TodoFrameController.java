@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -32,6 +33,7 @@ import net.jfabricationgames.todo.commands.button.SaveAllButtonCommand;
 import net.jfabricationgames.todo.commands.button.SaveButtonCommand;
 import net.jfabricationgames.todo.commands.button.SearchDialogButtonCommand;
 import net.jfabricationgames.todo.commands.button.SettingsButtonCommand;
+import net.jfabricationgames.todo.commands.button.WordWrapToggleButtonCommand;
 import net.jfabricationgames.todo.frame.util.DialogUtils;
 import net.jfabricationgames.todo.search.TodoSearchTool;
 
@@ -53,6 +55,8 @@ public class TodoFrameController implements Initializable {
 	private Button buttonCloseAll;
 	@FXML
 	private Button buttonSettings;
+	@FXML
+	private ToggleButton toggleButtonWordWrap;
 	@FXML
 	private TextField textAreaSearch;
 	@FXML
@@ -92,6 +96,7 @@ public class TodoFrameController implements Initializable {
 		addWindowClosingListeners();
 		adjustWindowPosition();
 		chooseInitialSelectedTab();
+		setInitialToggleButtonStates();
 	}
 	
 	/**
@@ -182,6 +187,10 @@ public class TodoFrameController implements Initializable {
 		return todoTabControllers.stream().filter(controller -> controller.getFile().equals(file)).findAny();
 	}
 	
+	public boolean isWordWrapEnabled() {
+		return toggleButtonWordWrap.isSelected();
+	}
+	
 	//***********************************************************************************
 	//*** private
 	//***********************************************************************************
@@ -217,6 +226,8 @@ public class TodoFrameController implements Initializable {
 		buttonCloseAll.setOnAction(e -> closeAllButtonCommand.execute());
 		SettingsButtonCommand settingsButtonCommand = new SettingsButtonCommand(this);
 		buttonSettings.setOnAction(e -> settingsButtonCommand.execute());
+		WordWrapToggleButtonCommand wordWrapToggleButtonCommand = new WordWrapToggleButtonCommand(this);
+		toggleButtonWordWrap.setOnAction(e -> wordWrapToggleButtonCommand.execute());
 	}
 	
 	private void addButtonTooltips() {
@@ -245,6 +256,9 @@ public class TodoFrameController implements Initializable {
 		Tooltip settingsTooltip = new Tooltip("Open Settings Dialog");
 		settingsTooltip.setFont(tooltipFont);
 		buttonSettings.setTooltip(settingsTooltip);
+		Tooltip wordWrapTooltip = new Tooltip("Enable / Disable Word Wrap");
+		wordWrapTooltip.setFont(tooltipFont);
+		toggleButtonWordWrap.setTooltip(wordWrapTooltip);
 		Tooltip searchTooltip = new Tooltip("Open Search Dialog (Ctrl + Shift + F)");
 		searchTooltip.setFont(tooltipFont);
 		buttonSearchDialog.setTooltip(searchTooltip);
@@ -274,6 +288,7 @@ public class TodoFrameController implements Initializable {
 						getAllTabControllers().stream().map(TodoTabController::getFile).filter(file -> file != null).collect(Collectors.toList()));
 				properties.setWindowPosition(getWindow());
 				properties.setSelectedTab(getSelectedTabIndex());
+				properties.setWordWrap(toggleButtonWordWrap.isSelected());
 				properties.store();
 			});
 		});
@@ -287,6 +302,13 @@ public class TodoFrameController implements Initializable {
 	
 	private void chooseInitialSelectedTab() {
 		setSelectedTab(properties.getSelectedTab());
+	}
+	
+	private void setInitialToggleButtonStates() {
+		if (properties.getWordWrap()) {
+			toggleButtonWordWrap.setSelected(true);
+			new WordWrapToggleButtonCommand(this).execute();
+		}
 	}
 	
 	//***********************************************************************************
