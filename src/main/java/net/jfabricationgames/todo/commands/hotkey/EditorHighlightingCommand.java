@@ -56,10 +56,14 @@ public class EditorHighlightingCommand extends AbstractButtonCommand implements 
 			selectedText = selectedText.replace("\n", " \n");
 			String[] lines = selectedText.split("\n");
 			//remove the spaces again to prevent index errors
-			for (int i = 0; i < lines.length; i++) {
-				if (lines[i].length() > 0 && selectedText.endsWith("\n")) {
+			for (int i = 0; i < lines.length - 1; i++) {
+				if (lines[i].length() > 0) {
 					lines[i] = lines[i].substring(0, lines[i].length() - 1);
 				}
+			}
+			//handle the last line separately cause it might not end with a line-break
+			if (selectedText.endsWith("\n")) {
+				lines[lines.length - 1] = lines[lines.length - 1].substring(0, lines[lines.length - 1].length() - 1);
 			}
 			
 			boolean allLinesStartWithHighlighting = Arrays.stream(lines).filter(line -> !line.startsWith(type.getLineStart())).count() == 0;
