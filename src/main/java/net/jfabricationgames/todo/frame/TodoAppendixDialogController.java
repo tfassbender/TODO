@@ -17,16 +17,19 @@ import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
+import javafx.beans.binding.Bindings;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import net.jfabricationgames.todo.commands.button.appendix.NewAppendixCommand;
 import net.jfabricationgames.todo.commands.button.appendix.RemoveAppendixCommand;
@@ -48,11 +51,17 @@ public class TodoAppendixDialogController implements Initializable {
 	@FXML
 	private ScrollPane scrollPaneImage;
 	@FXML
+	private StackPane stackPaneImage;
+	@FXML
 	private TextField textFieldAppendixFileName;
+	@FXML
+	private Slider sliderZoom;
 	
 	private Stage stage;
 	
 	private TodoFrameController controller;
+	
+	private double zoom = 1;
 	
 	public TodoAppendixDialogController(TodoFrameController controller) {
 		this.controller = controller;
@@ -64,6 +73,8 @@ public class TodoAppendixDialogController implements Initializable {
 		initializeAppendixList();
 		initializeTextField();
 		initializeImagePasting();
+		initializeImageDisplaying();
+		initializeZoom();
 	}
 	
 	//***********************************************************************************
@@ -132,6 +143,7 @@ public class TodoAppendixDialogController implements Initializable {
 					newValue.loadImageToView();
 				}
 				textFieldAppendixFileName.setText(newValue.getAppendixFileName());
+				updateImageZoom();
 			}
 		});
 	}
@@ -161,6 +173,7 @@ public class TodoAppendixDialogController implements Initializable {
 		imageViewAppendix.setOnKeyPressed(pasteImage);
 		scrollPaneImage.setOnKeyPressed(pasteImage);
 		textFieldAppendixFileName.setOnKeyPressed(pasteImage);
+		sliderZoom.setOnKeyPressed(pasteImage);
 		listAppendix.setOnKeyPressed(e -> {
 			//handle paste image
 			pasteImage.handle(e);
@@ -169,6 +182,18 @@ public class TodoAppendixDialogController implements Initializable {
 				new RemoveAppendixCommand(this).execute();
 			}
 		});
+	}
+	
+	private void initializeImageDisplaying() {
+		stackPaneImage.minWidthProperty()
+				.bind(Bindings.createDoubleBinding(() -> scrollPaneImage.getViewportBounds().getWidth(), scrollPaneImage.viewportBoundsProperty()));
+		stackPaneImage.minHeightProperty()
+				.bind(Bindings.createDoubleBinding(() -> scrollPaneImage.getViewportBounds().getHeight(), scrollPaneImage.viewportBoundsProperty()));
+	}
+	
+	private void initializeZoom() {
+		sliderZoom.setBlockIncrement(10);
+		sliderZoom.valueProperty().addListener((observable, oldVal, newVal) -> setZoom(newVal.doubleValue() / 100d));
 	}
 	
 	private Optional<AppendixFile> getSelectedFile() {
@@ -250,6 +275,20 @@ public class TodoAppendixDialogController implements Initializable {
 			fileName = nextFileName;
 		}
 		return file.getAbsolutePath();
+	}
+	
+	private void setZoom(double zoom) {
+		this.zoom = zoom;
+		updateImageZoom();
+	}
+	
+	private void updateImageZoom() {
+		if (imageViewAppendix.getImage() != null) {
+			double width = imageViewAppendix.getImage().getWidth() * zoom;
+			double height = imageViewAppendix.getImage().getHeight() * zoom;
+			imageViewAppendix.setFitWidth(width);
+			imageViewAppendix.setFitWidth(height);
+		}
 	}
 	
 	//***********************************************************************************
