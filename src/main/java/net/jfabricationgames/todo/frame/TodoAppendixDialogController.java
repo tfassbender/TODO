@@ -183,6 +183,9 @@ public class TodoAppendixDialogController implements Initializable {
 				textFieldAppendixFileName.setText(newValue.getAppendixFileName());
 				updateImageZoom();
 			}
+			else {
+				textFieldAppendixFileName.setText("");
+			}
 		});
 	}
 	
