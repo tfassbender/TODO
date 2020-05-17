@@ -4,8 +4,10 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -19,7 +21,7 @@
    <children>
       <GridPane layoutX="-115.0" layoutY="-51.0" prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="150.0" prefWidth="250.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="245.0" prefWidth="245.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="200.0" prefWidth="200.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -59,6 +61,35 @@
                         <Insets left="10.0" />
                      </HBox.margin>
                   </Button>
+                  <Button fx:id="buttonNormalSize" mnemonicParsing="false">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../buttons/icon_normal_size_small.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Separator orientation="VERTICAL" prefHeight="200.0">
+                     <HBox.margin>
+                        <Insets left="14.0" />
+                     </HBox.margin>
+                  </Separator>
+                  <ToggleButton fx:id="toggleButtonFitSize" mnemonicParsing="false">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../buttons/icon_fit_size_small.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </ToggleButton>
                </children>
                <GridPane.margin>
                   <Insets bottom="10.0" left="10.0" top="10.0" />

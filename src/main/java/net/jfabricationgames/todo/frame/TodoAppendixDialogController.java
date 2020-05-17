@@ -18,14 +18,17 @@ import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -46,6 +49,10 @@ public class TodoAppendixDialogController implements Initializable {
 	private Button buttonAdd;
 	@FXML
 	private Button buttonRemove;
+	@FXML
+	private Button buttonNormalSize;
+	@FXML
+	private ToggleButton toggleButtonFitSize;
 	@FXML
 	private ImageView imageViewAppendix;
 	@FXML
@@ -69,12 +76,14 @@ public class TodoAppendixDialogController implements Initializable {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		createDirectories();
 		initializeButtonFunctions();
 		initializeAppendixList();
 		initializeTextField();
 		initializeImagePasting();
 		initializeImageDisplaying();
 		initializeZoom();
+		initializeToggleButtons();
 	}
 	
 	//***********************************************************************************
@@ -133,11 +142,20 @@ public class TodoAppendixDialogController implements Initializable {
 	//*** private
 	//***********************************************************************************
 	
+	private void createDirectories() {
+		File file = new File(DEFAULT_FILE_DIR);
+		file.mkdirs();
+	}
+	
 	private void initializeButtonFunctions() {
 		NewAppendixCommand newAppendixCommand = new NewAppendixCommand(this);
 		buttonAdd.setOnAction(e -> newAppendixCommand.execute());
 		RemoveAppendixCommand removeAppendixCommand = new RemoveAppendixCommand(this);
 		buttonRemove.setOnAction(e -> removeAppendixCommand.execute());
+		buttonNormalSize.setOnAction(e -> {
+			sliderZoom.setValue(100);
+			setZoom(1);
+		});
 	}
 	
 	private void initializeAppendixList() {
@@ -290,16 +308,37 @@ public class TodoAppendixDialogController implements Initializable {
 	
 	private void setZoom(double zoom) {
 		this.zoom = zoom;
+		toggleButtonFitSize.setSelected(false);
 		updateImageZoom();
 	}
 	
 	private void updateImageZoom() {
 		if (imageViewAppendix.getImage() != null) {
-			double width = imageViewAppendix.getImage().getWidth() * zoom;
-			double height = imageViewAppendix.getImage().getHeight() * zoom;
-			imageViewAppendix.setFitWidth(width);
-			imageViewAppendix.setFitWidth(height);
+			if (!toggleButtonFitSize.isSelected()) {
+				double width = imageViewAppendix.getImage().getWidth() * zoom;
+				double height = imageViewAppendix.getImage().getHeight() * zoom;
+				imageViewAppendix.setFitWidth(width);
+				imageViewAppendix.setFitWidth(height);
+			}
 		}
+	}
+	
+	private void initializeToggleButtons() {
+		ChangeListener<? super Bounds> changeListener = (observable, oldValue, newValue) -> {
+			imageViewAppendix.setFitWidth(newValue.getWidth() * 1.25);
+			imageViewAppendix.setFitWidth(newValue.getHeight() * 1.25);
+		};
+		
+		toggleButtonFitSize.setOnAction(e -> {
+			if (toggleButtonFitSize.isSelected()) {
+				scrollPaneImage.viewportBoundsProperty().addListener(changeListener);
+				imageViewAppendix.setFitWidth(scrollPaneImage.getViewportBounds().getWidth() * 1.25);
+				imageViewAppendix.setFitWidth(scrollPaneImage.getViewportBounds().getHeight() * 1.25);
+			}
+			else {
+				scrollPaneImage.viewportBoundsProperty().removeListener(changeListener);
+			}
+		});
 	}
 	
 	//***********************************************************************************
