@@ -100,15 +100,19 @@ public class TodoAppendixDialogController implements Initializable {
 		updateTodo(false);
 	}
 	public void updateTodo(boolean force) {
-		if (force || stage.isShowing()) {
-			Optional<TodoTabController> tabControllerOptional = controller.getCurrentTabController();
-			if (tabControllerOptional.isPresent()) {
-				TodoTabController tabController = tabControllerOptional.get();
+		Optional<TodoTabController> tabControllerOptional = controller.getCurrentTabController();
+		if (tabControllerOptional.isPresent()) {
+			TodoTabController tabController = tabControllerOptional.get();
+			if (force || stage.isShowing()) {
 				List<File> appendixFiles = getAppendix(tabController.getFile());
 				listAppendix.getItems().clear();
 				listAppendix.getItems().addAll(appendixFiles.stream().map(AppendixFile::new).collect(Collectors.toList()));
+				imageViewAppendix.setImage(null);
 				listAppendix.getSelectionModel().select(0);
 			}
+			
+			//update the button on the TodoFrameController
+			controller.setAppendixButtonImage(hasAppendixFiles(tabController.getFile()));
 		}
 	}
 	
@@ -209,9 +213,16 @@ public class TodoAppendixDialogController implements Initializable {
 	 * @return A list of all appendix files that are linked to the current ToDo.
 	 */
 	private List<File> getAppendix(File todoFile) {
+		if (todoFile == null) {
+			return Collections.emptyList();
+		}
 		List<File> allAppendixFiles = getAllAppendixFiles();
 		String todoFileName = todoFile.getName().substring(0, todoFile.getName().lastIndexOf("."));
 		return allAppendixFiles.stream().filter(file -> file.getName().startsWith(todoFileName)).collect(Collectors.toList());
+	}
+	
+	private boolean hasAppendixFiles(File todoFile) {
+		return !getAppendix(todoFile).isEmpty();
 	}
 	
 	private List<File> getAllAppendixFiles() {

@@ -21,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -41,6 +42,7 @@ import net.jfabricationgames.todo.commands.button.SearchDialogButtonCommand;
 import net.jfabricationgames.todo.commands.button.SettingsButtonCommand;
 import net.jfabricationgames.todo.commands.button.WordWrapToggleButtonCommand;
 import net.jfabricationgames.todo.frame.util.DialogUtils;
+import net.jfabricationgames.todo.frame.util.GuiUtils;
 import net.jfabricationgames.todo.search.TodoSearchTool;
 
 public class TodoFrameController implements Initializable {
@@ -78,6 +80,10 @@ public class TodoFrameController implements Initializable {
 	@FXML
 	private TabPane tabView;
 	
+	private ImageView appendixButtonImage = new ImageView(GuiUtils.loadImage("net/jfabricationgames/todo/buttons/icon_appendix_small.png"));
+	private ImageView appendixButtonImagePresent = new ImageView(
+			GuiUtils.loadImage("net/jfabricationgames/todo/buttons/icon_appendix_present_small.png"));
+	
 	private List<TodoTabController> todoTabControllers = new ArrayList<TodoTabController>();
 	
 	private TodoFramePropertiesStore properties = new TodoFramePropertiesStore();
@@ -105,6 +111,8 @@ public class TodoFrameController implements Initializable {
 		setInitialToggleButtonStates();
 		createAppendixDialog();
 		createTabChangeListener();
+		
+		Platform.runLater(() -> appendixController.updateTodo());
 	}
 	
 	/**
@@ -205,6 +213,15 @@ public class TodoFrameController implements Initializable {
 	
 	public TodoAppendixDialogController getAppendixDialogController() {
 		return appendixController;
+	}
+	
+	public void setAppendixButtonImage(boolean hasAppendix) {
+		if (hasAppendix) {
+			buttonAppendix.setGraphic(appendixButtonImagePresent);
+		}
+		else {
+			buttonAppendix.setGraphic(appendixButtonImage);
+		}
 	}
 	
 	//***********************************************************************************
