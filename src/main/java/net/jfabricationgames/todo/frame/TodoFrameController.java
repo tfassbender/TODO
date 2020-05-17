@@ -102,6 +102,7 @@ public class TodoFrameController implements Initializable {
 		
 		loadTabs();
 		insertInitialTab();
+		createAppendixDialog();
 		addButtonCommands();
 		addButtonTooltips();
 		addSearchCommands();
@@ -109,7 +110,6 @@ public class TodoFrameController implements Initializable {
 		adjustWindowPosition();
 		chooseInitialSelectedTab();
 		setInitialToggleButtonStates();
-		createAppendixDialog();
 		createTabChangeListener();
 		
 		Platform.runLater(() -> appendixController.updateTodo());
@@ -322,8 +322,11 @@ public class TodoFrameController implements Initializable {
 				properties.setFiles(
 						getAllTabControllers().stream().map(TodoTabController::getFile).filter(file -> file != null).collect(Collectors.toList()));
 				properties.setWindowPosition(getWindow());
+				properties.setAppendixWindowPosition(appendixController.getWindow());
 				properties.setSelectedTab(getSelectedTabIndex());
 				properties.setWordWrap(toggleButtonWordWrap.isSelected());
+				properties.setAppendixFitImageSize(appendixController.isFitImageSize());
+				
 				properties.store();
 				
 				appendixController.hide();
@@ -334,6 +337,7 @@ public class TodoFrameController implements Initializable {
 	private void adjustWindowPosition() {
 		Platform.runLater(() -> {
 			properties.adjustWindowPosition(getWindow());
+			properties.adjustAppendixWindowPosition(appendixController.getWindow());
 		});
 	}
 	
@@ -345,6 +349,8 @@ public class TodoFrameController implements Initializable {
 		if (properties.getWordWrap()) {
 			toggleButtonWordWrap.setSelected(true);
 			new WordWrapToggleButtonCommand(this).execute();
+			
+			appendixController.setFitImageSize(properties.getAppendixFitImageSize());
 		}
 	}
 	

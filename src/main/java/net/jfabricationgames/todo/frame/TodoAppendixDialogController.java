@@ -34,6 +34,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import net.jfabricationgames.todo.commands.button.appendix.NewAppendixCommand;
 import net.jfabricationgames.todo.commands.button.appendix.RemoveAppendixCommand;
 import net.jfabricationgames.todo.frame.util.DialogUtils;
@@ -136,6 +137,21 @@ public class TodoAppendixDialogController implements Initializable {
 					() -> {// on cancel
 					});
 		}
+	}
+	
+	/**
+	 * Get the current window for showing dialogs
+	 */
+	public Window getWindow() {
+		return listAppendix.getScene().getWindow();
+	}
+	
+	public boolean isFitImageSize() {
+		return toggleButtonFitSize.isSelected();
+	}
+	
+	public void setFitImageSize(boolean fit) {
+		toggleButtonFitSize.setSelected(fit);
 	}
 	
 	//***********************************************************************************

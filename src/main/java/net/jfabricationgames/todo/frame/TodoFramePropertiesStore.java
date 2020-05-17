@@ -24,12 +24,19 @@ public class TodoFramePropertiesStore {
 	private static final String FILES_DELEMITER = "|";
 	private static final String PROPERTY_SELECTED_TAB_INDEX = "SELECTED_TAB_INDEX";
 	private static final String PROPERTY_WORD_WRAP = "WORD_WRAP_ENABLED";
+	private static final String PROPERTY_APPENDIX_FIT_IMAGE_SIZE = "APPENDIX_FIT_IMAGE_SIZE";
 	
 	private static final String PROPERTY_WINDOW_X = "WINDOW_POS_X";
 	private static final String PROPERTY_WINDOW_Y = "WINDOW_POS_Y";
 	private static final String PROPERTY_WINDOW_WIDTH = "WINDOW_POS_WIDTH";
 	private static final String PROPERTY_WINDOW_HEIGHT = "WINDOW_POS_HEIGHT";
 	private static final String PROPERTY_WINDOW_MAXIMIZED = "WINDOW_POS_MAXIMIZED";
+	
+	private static final String APPENDIX_WINDOW_X = "APPENDIX_POS_X";
+	private static final String APPENDIX_WINDOW_Y = "APPENDIX_POS_Y";
+	private static final String APPENDIX_WINDOW_WIDTH = "APPENDIX_POS_WIDTH";
+	private static final String APPENDIX_WINDOW_HEIGHT = "APPENDIX_POS_HEIGHT";
+	private static final String APPENDIX_WINDOW_MAXIMIZED = "APPENDIX_POS_MAXIMIZED";
 	
 	private Properties properties;
 	
@@ -97,6 +104,44 @@ public class TodoFramePropertiesStore {
 		properties.setProperty(PROPERTY_WINDOW_MAXIMIZED, Boolean.toString(maximized));
 	}
 	
+	/**
+	 * Adjust the appendix dialog windows position to the values in the properties.
+	 */
+	public void adjustAppendixWindowPosition(Window window) {
+		double x = Double.parseDouble(properties.getProperty(APPENDIX_WINDOW_X, "200"));
+		double y = Double.parseDouble(properties.getProperty(APPENDIX_WINDOW_Y, "200"));
+		double width = Double.parseDouble(properties.getProperty(APPENDIX_WINDOW_WIDTH, "1000"));
+		double height = Double.parseDouble(properties.getProperty(APPENDIX_WINDOW_HEIGHT, "800"));
+		boolean maximized = Boolean.parseBoolean(properties.getProperty(APPENDIX_WINDOW_MAXIMIZED, "false"));
+		
+		window.setX(x);
+		window.setY(y);
+		if (!maximized) {
+			window.setWidth(width);
+			window.setHeight(height);
+		}
+		Platform.runLater(() -> ((Stage) window).setMaximized(maximized));
+	}
+	
+	/**
+	 * Set the properties value to the current appendix dialog window position
+	 */
+	public void setAppendixWindowPosition(Window window) {
+		double x = window.getX();
+		double y = window.getY();
+		double width = window.getWidth();
+		double height = window.getHeight();
+		boolean maximized = ((Stage) window).isMaximized();
+		
+		properties.setProperty(APPENDIX_WINDOW_X, Double.toString(x));
+		properties.setProperty(APPENDIX_WINDOW_Y, Double.toString(y));
+		if (!maximized) {
+			properties.setProperty(APPENDIX_WINDOW_WIDTH, Double.toString(width));
+			properties.setProperty(APPENDIX_WINDOW_HEIGHT, Double.toString(height));
+		}
+		properties.setProperty(APPENDIX_WINDOW_MAXIMIZED, Boolean.toString(maximized));
+	}
+	
 	public int getSelectedTab() {
 		return Integer.parseInt(properties.getProperty(PROPERTY_SELECTED_TAB_INDEX, "0"));
 	}
@@ -111,6 +156,14 @@ public class TodoFramePropertiesStore {
 	
 	public void setWordWrap(boolean selected) {
 		properties.setProperty(PROPERTY_WORD_WRAP, Boolean.toString(selected));
+	}
+	
+	public boolean getAppendixFitImageSize() {
+		return Boolean.parseBoolean(properties.getProperty(PROPERTY_APPENDIX_FIT_IMAGE_SIZE, "false"));
+	}
+	
+	public void setAppendixFitImageSize(boolean selected) {
+		properties.setProperty(PROPERTY_APPENDIX_FIT_IMAGE_SIZE, Boolean.toString(selected));
 	}
 	
 	public void store() {
