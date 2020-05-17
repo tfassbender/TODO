@@ -7,6 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Tab;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import net.jfabricationgames.todo.frame.TodoFrameController;
 import net.jfabricationgames.todo.frame.TodoTabController;
@@ -56,5 +58,27 @@ public abstract class GuiUtils {
 		GuiUtils.insertPane(TodoTabController.TODO_TAB_FXML, tabContent, tabController, null, loader);
 		
 		return tabController;
+	}
+	
+	public static void loadImageToView(String imagePath, ImageView imageView) {
+		try {
+			Image image = new Image(imagePath);
+			imageView.setImage(image);
+			imageView.setCache(true);
+		}
+		catch (IllegalArgumentException | IllegalStateException e) {
+			DialogUtils.showExceptionDialog("Image Error", "Could not load image for GUI element: " + imagePath, e, true);
+		}
+	}
+	
+	public static Image loadImage(String imagePath) {
+		try {
+			Image image = new Image(imagePath);
+			return image;
+		}
+		catch (IllegalArgumentException | IllegalStateException e) {
+			DialogUtils.showExceptionDialog("Image Error", "Could not load image for GUI element: " + imagePath, e, true);
+			return null;
+		}
 	}
 }

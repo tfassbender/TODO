@@ -10,7 +10,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class TodoFrameApplication extends Application {
-
+	
 	public static final String APPLCIATION_NAME = "TODO";
 	
 	private TodoFrameController controller;

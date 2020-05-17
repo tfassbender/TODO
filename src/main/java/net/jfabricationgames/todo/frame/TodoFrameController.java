@@ -10,20 +10,26 @@ import java.util.stream.Collectors;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import net.jfabricationgames.todo.commands.AbstractButtonCommand;
 import net.jfabricationgames.todo.commands.ButtonCommand;
 import net.jfabricationgames.todo.commands.SaveTabCommand;
+import net.jfabricationgames.todo.commands.button.AppendixButtonCommand;
 import net.jfabricationgames.todo.commands.button.CloseAllButtonCommand;
 import net.jfabricationgames.todo.commands.button.CloseButtonCommand;
 import net.jfabricationgames.todo.commands.button.NewButtonCommand;
@@ -54,6 +60,8 @@ public class TodoFrameController implements Initializable {
 	@FXML
 	private Button buttonCloseAll;
 	@FXML
+	private Button buttonAppendix;
+	@FXML
 	private Button buttonSettings;
 	@FXML
 	private ToggleButton toggleButtonWordWrap;
@@ -76,9 +84,7 @@ public class TodoFrameController implements Initializable {
 	
 	private TodoSearchTool searchTool;
 	
-	public TextField getTextAreaSearch() {
-		return textAreaSearch;
-	}
+	private TodoAppendixDialogController appendixController;
 	
 	//***********************************************************************************
 	//*** public
@@ -97,6 +103,8 @@ public class TodoFrameController implements Initializable {
 		adjustWindowPosition();
 		chooseInitialSelectedTab();
 		setInitialToggleButtonStates();
+		createAppendixDialog();
+		createTabChangeListener();
 	}
 	
 	/**
@@ -119,6 +127,10 @@ public class TodoFrameController implements Initializable {
 			//always keep one tab open (by adding a new one if all are closed)
 			new NewButtonCommand(this).execute();
 		}
+	}
+	
+	public TextField getTextAreaSearch() {
+		return textAreaSearch;
 	}
 	
 	/**
@@ -191,6 +203,10 @@ public class TodoFrameController implements Initializable {
 		return toggleButtonWordWrap.isSelected();
 	}
 	
+	public TodoAppendixDialogController getAppendixDialogController() {
+		return appendixController;
+	}
+	
 	//***********************************************************************************
 	//*** private
 	//***********************************************************************************
@@ -224,6 +240,8 @@ public class TodoFrameController implements Initializable {
 		buttonClose.setOnAction(e -> closeButtonCommand.execute());
 		CloseAllButtonCommand closeAllButtonCommand = new CloseAllButtonCommand(this);
 		buttonCloseAll.setOnAction(e -> closeAllButtonCommand.execute());
+		AppendixButtonCommand appendixButtonCommand = new AppendixButtonCommand(this);
+		buttonAppendix.setOnAction(e -> appendixButtonCommand.execute());
 		SettingsButtonCommand settingsButtonCommand = new SettingsButtonCommand(this);
 		buttonSettings.setOnAction(e -> settingsButtonCommand.execute());
 		WordWrapToggleButtonCommand wordWrapToggleButtonCommand = new WordWrapToggleButtonCommand(this);
@@ -290,6 +308,8 @@ public class TodoFrameController implements Initializable {
 				properties.setSelectedTab(getSelectedTabIndex());
 				properties.setWordWrap(toggleButtonWordWrap.isSelected());
 				properties.store();
+				
+				appendixController.hide();
 			});
 		});
 	}
@@ -309,6 +329,33 @@ public class TodoFrameController implements Initializable {
 			toggleButtonWordWrap.setSelected(true);
 			new WordWrapToggleButtonCommand(this).execute();
 		}
+	}
+	
+	private void createAppendixDialog() {
+		appendixController = new TodoAppendixDialogController(this);
+		try {
+			URL fxmlUrl = getClass().getResource("/net/jfabricationgames/todo/frame/TodoAppendixDialog.fxml");
+			FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl);
+			fxmlLoader.setController(appendixController);
+			Parent root = fxmlLoader.load();
+			Scene scene = new Scene(root, 1000, 600);
+			String stylesheet = getClass().getResource("/net/jfabricationgames/todo/css/highlighting.css").toExternalForm();
+			scene.getStylesheets().add(stylesheet);
+			Stage stage = new Stage();
+			stage.setTitle("TODO Appendix");
+			stage.setScene(scene);
+			stage.getIcons().add(new Image("/net/jfabricationgames/todo/frame/icon_todo.png"));
+			
+			appendixController.setStage(stage);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void createTabChangeListener() {
+		//update the appendix dialog when the selected tab changes
+		tabView.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> appendixController.updateTodo(false));
 	}
 	
 	//***********************************************************************************
