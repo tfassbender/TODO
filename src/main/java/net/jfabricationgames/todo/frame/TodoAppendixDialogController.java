@@ -289,11 +289,12 @@ public class TodoAppendixDialogController implements Initializable {
 			try {
 				BufferedImage img = (BufferedImage) content.getTransferData(DataFlavor.imageFlavor);
 				String filename = createNextAppendixFileName(".png");
-				
-				File outfile = new File(filename);
-				ImageIO.write(img, "png", outfile);
-				
-				return Optional.of(new AppendixFile(outfile));
+				if (filename != null) {
+					File outfile = new File(filename);
+					ImageIO.write(img, "png", outfile);
+					
+					return Optional.of(new AppendixFile(outfile));
+				}
 			}
 			catch (UnsupportedFlavorException | IOException e) {
 				DialogUtils.showExceptionDialog("Pasting Error", "The image could not be pasted", e, false);
@@ -307,7 +308,15 @@ public class TodoAppendixDialogController implements Initializable {
 	
 	private String createNextAppendixFileName(String fileEnding) {
 		AppendixFile empty = new AppendixFile();
-		String fileName = DEFAULT_FILE_DIR + empty.getFileNamePrefix() + "appendix" + fileEnding;
+		String fileName;
+		try {
+			fileName = DEFAULT_FILE_DIR + empty.getFileNamePrefix() + "appendix" + fileEnding;
+		}
+		catch (IllegalStateException ise) {
+			DialogUtils.showErrorDialog("No TODO File", "The \".todo\" file was not yet created",
+					"Please save the Todo before proceeding to add an appendix");
+			return null;
+		}
 		
 		File file = new File(fileName);
 		//choose a file that doesn't exist yet
