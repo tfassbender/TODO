@@ -42,6 +42,11 @@
 	-fx-fill: gray;
 }
 
+.striked {
+	-fx-fill: gray;
+	-fx-strikethrough: true;
+}
+
 .searched {
 	-rtfx-background-color: #a0a0a0;
 	-fx-fill: yellow;

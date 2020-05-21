@@ -34,7 +34,7 @@ public class TabIconConfigurator implements TabConfigurator {
 			tabController.getTab().setGraphic(new ImageView(ICON_QUESTION));
 		}
 		else {
-			int open = typeCount.total - typeCount.headlines - typeCount.comments - typeCount.results - typeCount.done;
+			int open = typeCount.total - typeCount.headlines - typeCount.comments - typeCount.results - typeCount.done - typeCount.striked;
 			if (open > 0) {
 				tabController.getTab().setGraphic(new ImageView(ICON_TODO));
 			}

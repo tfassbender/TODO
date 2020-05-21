@@ -24,7 +24,8 @@ public class EditorHighlightingCommand extends AbstractButtonCommand implements 
 		HEADLINE_1("# "), //
 		HEADLINE_2("## "), //
 		HEADLINE_3("### "), //
-		HEADLINE_4("#### ");
+		HEADLINE_4("#### "), //
+		STRIKED("/- ");
 		
 		private final String lineStart;
 		

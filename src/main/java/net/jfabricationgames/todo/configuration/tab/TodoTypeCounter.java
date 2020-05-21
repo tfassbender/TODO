@@ -60,19 +60,21 @@ public class TodoTypeCounter {
 		public int done;
 		public int comments;
 		public int results;
+		public int striked;
 		public int total;
 		
 		public TypeCount() {
 			
 		}
 		
-		public TypeCount(int headlines, int importants, int questions, int done, int comments, int results, int total) {
+		public TypeCount(int headlines, int importants, int questions, int done, int comments, int results, int striked, int total) {
 			this.headlines = headlines;
 			this.importants = importants;
 			this.questions = questions;
 			this.done = done;
 			this.comments = comments;
 			this.results = results;
+			this.striked = striked;
 			this.total = total;
 		}
 		
@@ -83,11 +85,12 @@ public class TodoTypeCounter {
 			done = 0;
 			comments = 0;
 			results = 0;
+			striked = 0;
 			total = 0;
 		}
 		
 		public TypeCount clone() {
-			return new TypeCount(headlines, importants, questions, done, comments, results, total);
+			return new TypeCount(headlines, importants, questions, done, comments, results, striked, total);
 		}
 		
 		@Override
@@ -100,6 +103,7 @@ public class TodoTypeCounter {
 			result = prime * result + importants;
 			result = prime * result + questions;
 			result = prime * result + results;
+			result = prime * result + striked;
 			result = prime * result + total;
 			return result;
 		}
@@ -148,6 +152,9 @@ public class TodoTypeCounter {
 			}
 			else if (name.equals(TodoHighlightingConfigurator.PatternMatchers.RESULT.getName())) {
 				count.results++;
+			}
+			else if (name.equals(TodoHighlightingConfigurator.PatternMatchers.STRIKED.getName())) {
+				count.striked++;
 			}
 		}
 		
