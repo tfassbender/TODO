@@ -13,7 +13,8 @@ public class TodoHighlightingConfigurator extends HighlightingConfigurator {
 		DONE("DONE", "^( |\\t)*\\/ .*", "done"), //
 		QUESTIONABLE("QUESTIONABLE", "^( |\\t)*\\? .*", "questionable"), //
 		RESULT("RESULT", "^( |\\t)*> .*", "result"), //
-		STRIKED("STRIKED", "^( |\\t)*\\/- .*", "striked");
+		STRIKED("STRIKED", "^( |\\t)*\\/- .*", "striked"), //
+		STRIKED_COMMENT("STRIKEDCOMMENT", "^( |\\t)*\\/\\/- .*", "striked-comment");
 		
 		private String name;
 		private String regex;

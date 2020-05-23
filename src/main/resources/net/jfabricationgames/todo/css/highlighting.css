@@ -47,6 +47,11 @@
 	-fx-strikethrough: true;
 }
 
+.striked-comment {
+	-fx-fill: green;
+	-fx-strikethrough: true;
+}
+
 .searched {
 	-rtfx-background-color: #a0a0a0;
 	-fx-fill: yellow;

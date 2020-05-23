@@ -56,5 +56,7 @@ public class TodoHotkeyConfigurator extends HotkeyConfigurator {
 				new EditorHighlightingCommand(controller, EditorHighlightingCommand.HighlightingType.HEADLINE_4));
 		addHotkey("MARK_ROWS_STRIKED", new HotkeyCombination(KeyCode.X, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN),
 				new EditorHighlightingCommand(controller, EditorHighlightingCommand.HighlightingType.STRIKED));
+		addHotkey("MARK_ROWS_STRIKED_COMMENT", new HotkeyCombination(KeyCode.V, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN),
+				new EditorHighlightingCommand(controller, EditorHighlightingCommand.HighlightingType.STRIKED_COMMENT));
 	}
 }
