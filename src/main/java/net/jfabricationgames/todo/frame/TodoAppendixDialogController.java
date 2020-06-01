@@ -23,13 +23,18 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
@@ -180,6 +185,9 @@ public class TodoAppendixDialogController implements Initializable {
 				if (newValue.isImage()) {
 					newValue.loadImageToView();
 				}
+				else {
+					newValue.showErrorImage();
+				}
 				textFieldAppendixFileName.setText(newValue.getAppendixFileName());
 				updateImageZoom();
 			}
@@ -188,7 +196,7 @@ public class TodoAppendixDialogController implements Initializable {
 			}
 		});
 	}
-	
+
 	private void initializeTextField() {
 		//change file name on enter key
 		textFieldAppendixFileName.setOnAction(e -> {
@@ -394,6 +402,18 @@ public class TodoAppendixDialogController implements Initializable {
 		
 		public void loadImageToView() {
 			GuiUtils.loadImageToView("file:///" + file.getAbsolutePath(), imageViewAppendix);
+		}
+		
+		private void showErrorImage() {
+			Label label = new Label("Can't open this file.\nThe file is not an image.");
+		    label.setMinSize(500, 300);
+		    label.setMaxSize(500, 300);
+		    label.setAlignment(Pos.CENTER);
+		    label.setStyle("-fx-font-size:30pt;");
+		    Scene scene = new Scene(new Group(label));
+		    WritableImage img = new WritableImage(500, 300);
+		    scene.snapshot(img);
+		    imageViewAppendix.setImage(img);
 		}
 		
 		public void setFileName(String name) {
