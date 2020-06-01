@@ -17,9 +17,9 @@ import net.jfabricationgames.todo.configuration.CodeAreaConfiguator;
 public class HotkeyConfigurator implements CodeAreaConfiguator {
 	
 	/** maps the name of the hotkey command to the keys that have to be pressed as a {@link HotkeyCombination} */
-	private Map<String, HotkeyCombination> hotkeyCombinations = new HashMap<String, HotkeyCombination>();
+	protected Map<String, HotkeyCombination> hotkeyCombinations = new HashMap<String, HotkeyCombination>();
 	/** maps the name of the hotkey to the {@link ButtonCommand} that is executed */
-	private Map<String, ButtonCommand> commands = new HashMap<String, ButtonCommand>();
+	protected Map<String, ButtonCommand> commands = new HashMap<String, ButtonCommand>();
 	/** a list of hotkey combinations that are removed from the code area by setting them to empty commands */
 	private List<HotkeyCombination> combinationsToRemove = new ArrayList<HotkeyCombination>();
 	

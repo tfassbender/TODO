@@ -1,7 +1,14 @@
 package net.jfabricationgames.todo.configuration.hotkey;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyCombination.Modifier;
 import net.jfabricationgames.todo.commands.button.CloseButtonCommand;
 import net.jfabricationgames.todo.commands.button.NewButtonCommand;
 import net.jfabricationgames.todo.commands.button.OpenButtonCommand;
@@ -64,5 +71,23 @@ public class TodoHotkeyConfigurator extends HotkeyConfigurator {
 				new EditorHighlightingCommand(controller, EditorHighlightingCommand.HighlightingType.STRIKED));
 		addHotkey("MARK_ROWS_STRIKED_COMMENT", new HotkeyCombination(KeyCode.V, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN),
 				new EditorHighlightingCommand(controller, EditorHighlightingCommand.HighlightingType.STRIKED_COMMENT));
+	}
+	
+	public String getDescriptionText() {
+		final List<String> lines = new ArrayList<String>();
+		final String format = "%s -> %s";
+		
+		for (Entry<String, HotkeyCombination> hotkey : hotkeyCombinations.entrySet()) {
+			String name = hotkey.getKey();
+			HotkeyCombination keyCombination = hotkey.getValue();
+			String keyCombinationString = keyCombination.getKeyCode().getName();
+			for (Modifier modifier : keyCombination.getModifiers()) {
+				keyCombinationString += " + " + modifier.getKey().getName();
+			}
+			lines.add(String.format(format, name, keyCombinationString));
+		}
+		Collections.sort(lines);
+		
+		return lines.stream().collect(Collectors.joining("\n"));
 	}
 }
