@@ -10,10 +10,12 @@ import net.jfabricationgames.todo.commands.button.SaveAllButtonCommand;
 import net.jfabricationgames.todo.commands.button.SaveButtonCommand;
 import net.jfabricationgames.todo.commands.hotkey.DeleteLineCommand;
 import net.jfabricationgames.todo.commands.hotkey.EditorHighlightingCommand;
+import net.jfabricationgames.todo.commands.hotkey.MoveTabCommand;
 import net.jfabricationgames.todo.commands.hotkey.SwitchTabBeforeCommand;
 import net.jfabricationgames.todo.commands.hotkey.SwitchTabNextCommand;
 import net.jfabricationgames.todo.commands.hotkey.ToSearchbarCommand;
 import net.jfabricationgames.todo.frame.TodoFrameController;
+import net.jfabricationgames.todo.frame.TodoFrameController.Direction;
 
 public class TodoHotkeyConfigurator extends HotkeyConfigurator {
 	
@@ -35,6 +37,10 @@ public class TodoHotkeyConfigurator extends HotkeyConfigurator {
 		addHotkey("DELETE_LINE", new HotkeyCombination(KeyCode.D, KeyCombination.CONTROL_DOWN), new DeleteLineCommand(controller));
 		addHotkey("SWITCH_TAB_NEXT", new HotkeyCombination(KeyCode.PAGE_DOWN, KeyCombination.CONTROL_DOWN), new SwitchTabNextCommand(controller));
 		addHotkey("SWITCH_TAB_BEFORE", new HotkeyCombination(KeyCode.PAGE_UP, KeyCombination.CONTROL_DOWN), new SwitchTabBeforeCommand(controller));
+		addHotkey("MOVE_TAB_RIGHT", new HotkeyCombination(KeyCode.PAGE_DOWN, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN),
+				new MoveTabCommand(controller, Direction.RIGHT));
+		addHotkey("MOVE_TAB_LEFT", new HotkeyCombination(KeyCode.PAGE_UP, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN),
+				new MoveTabCommand(controller, Direction.LEFT));
 		addHotkey("FIND", new HotkeyCombination(KeyCode.F, KeyCombination.CONTROL_DOWN), new ToSearchbarCommand(controller));
 		
 		//editor highlighting controls

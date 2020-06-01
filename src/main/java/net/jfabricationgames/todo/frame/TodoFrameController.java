@@ -16,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
@@ -92,6 +93,11 @@ public class TodoFrameController implements Initializable {
 	
 	private TodoAppendixDialogController appendixController;
 	
+	public enum Direction {
+		RIGHT, //
+		LEFT; //
+	}
+	
 	//***********************************************************************************
 	//*** public
 	//***********************************************************************************
@@ -135,6 +141,49 @@ public class TodoFrameController implements Initializable {
 			//always keep one tab open (by adding a new one if all are closed)
 			new NewButtonCommand(this).execute();
 		}
+	}
+	
+	/**
+	 * Move the currently selected tab one step to the left or right
+	 * 
+	 * @param direction
+	 *        The direction to which the tab shall be moved
+	 */
+	public void moveCurrentTab(Direction direction) throws IllegalStateException {
+		int tabIndex = tabView.getSelectionModel().getSelectedIndex();
+		int tabCount = getNumTabs();
+		
+		if (tabIndex == -1) {
+			throw new IllegalStateException("No active tab");
+		}
+		
+		int nextTabIndex = tabIndex;
+		switch (direction) {
+			case LEFT:
+				nextTabIndex--;
+				break;
+			case RIGHT:
+				nextTabIndex++;
+				break;
+			default:
+				throw new IllegalStateException("Unknown direction: " + direction);
+		}
+		
+		//cyclic border condition
+		nextTabIndex = (nextTabIndex + tabCount) % tabCount;
+		
+		//remove tab and insert at new position
+		Tab tab = tabView.getTabs().get(tabIndex);
+		TodoTabController controller = todoTabControllers.get(tabIndex);
+		
+		tabView.getTabs().remove(tabIndex);
+		tabView.getTabs().add(nextTabIndex, tab);
+		
+		todoTabControllers.remove(tabIndex);
+		todoTabControllers.add(nextTabIndex, controller);
+		
+		//select the moved tab
+		setSelectedTab(nextTabIndex);
 	}
 	
 	public TextField getTextAreaSearch() {
