@@ -13,7 +13,7 @@ import net.jfabricationgames.todo.frame.TodoTabController;
 
 public class TodoSearchTool {
 	
-	private String searchedPhrase;
+	private String searchedPhrase = "";
 	
 	private final ButtonCommand nextOccurenceButtonCommand;
 	private final ButtonCommand previousOccurenceButtonCommand;

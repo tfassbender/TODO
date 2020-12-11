@@ -60,3 +60,11 @@
 .regexError {
 	-fx-text-fill: red;
 }
+
+.inline-bold {
+	-fx-font-weight: bold;
+}
+
+.inline-striked {
+	-fx-strikethrough: true;
+}

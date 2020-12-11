@@ -12,6 +12,7 @@
 
 		<richtextfx.version>0.10.5</richtextfx.version>
 		<javafx.version>11</javafx.version>
+		<junit.version>5.4.0</junit.version>
 	</properties>
 
 	<dependencies>
@@ -26,6 +27,20 @@
 			<artifactId>javafx</artifactId>
 			<version>${javafx.version}</version>
 			<type>pom</type>
+		</dependency>
+
+		<!-- JUnit -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

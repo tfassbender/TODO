@@ -80,10 +80,11 @@ public class TodoHotkeyConfigurator extends HotkeyConfigurator {
 		for (Entry<String, HotkeyCombination> hotkey : hotkeyCombinations.entrySet()) {
 			String name = hotkey.getKey();
 			HotkeyCombination keyCombination = hotkey.getValue();
-			String keyCombinationString = keyCombination.getKeyCode().getName();
+			String keyCombinationString = "";
 			for (Modifier modifier : keyCombination.getModifiers()) {
-				keyCombinationString += " + " + modifier.getKey().getName();
+				keyCombinationString += modifier.getKey().getName() + " + ";
 			}
+			keyCombinationString += keyCombination.getKeyCode().getName();
 			lines.add(String.format(format, name, keyCombinationString));
 		}
 		Collections.sort(lines);

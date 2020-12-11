@@ -50,6 +50,7 @@ public abstract class AbstractButtonCommand implements ButtonCommand {
 		tabController.setText(content);
 		tabController.assumeTextSaved();
 		tabController.scrollToTop();
+		tabController.getCodeArea().setWrapText(controller.isWordWrapEnabled());
 		this.controller.addTab(tabController);
 		
 		return tabController;
