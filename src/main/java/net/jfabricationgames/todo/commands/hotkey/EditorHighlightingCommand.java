@@ -70,12 +70,16 @@ public class EditorHighlightingCommand extends AbstractButtonCommand implements 
 			
 			boolean allLinesStartWithHighlighting = Arrays.stream(lines).filter(line -> !line.startsWith(type.getLineStart())).count() == 0;
 			boolean markChangedLines = true;
+			int caretPosition = codeArea.getCaretPosition();
 			
 			//if only an empty line is selected, add the highlighting without marking it
-			if (lines.length == 0 || lines.length == 1 && lines[0].equals("")) {
-				allLinesStartWithHighlighting = false;
+			if (lines.length <= 1) {
 				markChangedLines = false;
-				lines = new String[] {""};
+				
+				if (lines.length == 1 && lines[0].equals("")) {
+					allLinesStartWithHighlighting = false;
+					lines = new String[] {""};
+				}
 			}
 			
 			int insertIndex = selectedLineTextIndices[0];
@@ -98,6 +102,16 @@ public class EditorHighlightingCommand extends AbstractButtonCommand implements 
 			if (markChangedLines) {
 				//re-select the text that was edited
 				codeArea.selectRange(selectedLineTextIndices[0], insertIndex - 1);
+			}
+			else {
+				int newCaretPosition = caretPosition;
+				if (allLinesStartWithHighlighting) {
+					newCaretPosition -= type.getLineStart().length();
+				}
+				else {
+					newCaretPosition += type.getLineStart().length();
+				}
+				codeArea.moveTo(newCaretPosition);
 			}
 		}
 	}
