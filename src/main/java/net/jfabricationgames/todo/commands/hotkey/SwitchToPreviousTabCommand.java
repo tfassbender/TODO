@@ -4,9 +4,9 @@ import net.jfabricationgames.todo.commands.AbstractButtonCommand;
 import net.jfabricationgames.todo.commands.ButtonCommand;
 import net.jfabricationgames.todo.frame.TodoFrameController;
 
-public class SwitchTabBeforeCommand extends AbstractButtonCommand implements ButtonCommand {
+public class SwitchToPreviousTabCommand extends AbstractButtonCommand implements ButtonCommand {
 	
-	public SwitchTabBeforeCommand(TodoFrameController controller) {
+	public SwitchToPreviousTabCommand(TodoFrameController controller) {
 		super(controller);
 	}
 	
