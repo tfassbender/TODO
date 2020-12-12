@@ -143,7 +143,13 @@ public class HighlightingConfigurator implements CodeAreaConfiguator {
 		List<PatternMatch> fullLineMatches = computeHighlighting(text, pattern, cssClasses);
 		List<PatternMatch> inLineMatches = computeHighlighting(text, inlinePattern, inlineCssClasses);
 		
-		return mergeToStyleSpans(fullLineMatches, inLineMatches, text.length());
+		try {
+			return mergeToStyleSpans(fullLineMatches, inLineMatches, text.length());
+		}
+		catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new StyleSpansBuilder<Collection<String>>().add(Collections.emptyList(), text.length()).create();
+		}
 	}
 	
 	private List<PatternMatch> computeHighlighting(String text, Pattern pattern, Map<String, String> cssClasses) {
@@ -181,6 +187,7 @@ public class HighlightingConfigurator implements CodeAreaConfiguator {
 		int fullLineMatchesIndex = 0;
 		int inLineMatchesIndex = 0;
 		int lastMatchEnd = 0;
+		boolean multipleInLineMatchesInFullLineMatch = false;
 		
 		while (fullLineMatches.size() > fullLineMatchesIndex || inLineMatches.size() > inLineMatchesIndex) {
 			PatternMatch nextFullLineMatch = fullLineMatches.size() > fullLineMatchesIndex ? fullLineMatches.get(fullLineMatchesIndex) : null;
@@ -188,7 +195,6 @@ public class HighlightingConfigurator implements CodeAreaConfiguator {
 			PatternMatch nextMatch = null;
 			
 			boolean matchesIntersect = true;
-			boolean noIntersectionBecauseFullLineFirst = true;
 			
 			if (nextFullLineMatch != null && nextInLineMatch != null) {
 				int Sf = nextFullLineMatch.startIndex;
@@ -199,81 +205,58 @@ public class HighlightingConfigurator implements CodeAreaConfiguator {
 				String CssI = nextInLineMatch.cssStyleClass;
 				
 				if (Si > Ef) {
-					noIntersectionBecauseFullLineFirst = true;
 					matchesIntersect = false;
+					nextMatch = nextFullLineMatch;
+					fullLineMatchesIndex++;
 				}
 				else if (Sf > Ei) {
-					noIntersectionBecauseFullLineFirst = false;
 					matchesIntersect = false;
+					nextMatch = nextInLineMatch;
+					inLineMatchesIndex++;
 				}
 				else {
 					// the matches intersect
+					// ...<Sf>...<Si>... (other cases can't happen, because Sf is always the start of the line and Si can't be on multiple lines)
 					
-					if (Sf == Si) {
-						// ...<Sf, Si>... 
+					if (Sf - lastMatchEnd > 0) {
 						spansBuilder.add(Collections.emptyList(), Sf - lastMatchEnd);
-						
-						if (Ef == Ei) {
-							// ...<Sf, Si>...<Ef, Ei>...
-							spansBuilder.add(Arrays.asList(CssF, CssI), Ef - Sf);
-							lastMatchEnd = Ef;
-						}
-						else if (Ef < Ei) {
-							// ...<Sf, Si>...<Ef>...<Ei>...
-							spansBuilder.add(Arrays.asList(CssF, CssI), Ef - Sf);
-							spansBuilder.add(Collections.singleton(CssI), Ei - Ef);
-							lastMatchEnd = Ei;
+					}
+					
+					if (Ef == Ei) {
+						// ...<Sf>...<Si>...<Ef, Ei>...
+						if (multipleInLineMatchesInFullLineMatch) {
+							spansBuilder.add(Collections.singleton(CssF), Si - lastMatchEnd);
 						}
 						else {
-							// ...<Sf, Si>...<Ei>...<Ef>...
-							spansBuilder.add(Arrays.asList(CssF, CssI), Ei - Si);
-							spansBuilder.add(Collections.singleton(CssF), Ef - Ei);
-							lastMatchEnd = Ef;
+							spansBuilder.add(Collections.singleton(CssF), Si - Sf);
 						}
+						spansBuilder.add(Arrays.asList(CssF, CssI), Ei - Si);
+						lastMatchEnd = Ei;
 					}
 					else {
-						if (Sf < Si) {
-							// ...<Sf>...<Si>...
-							spansBuilder.add(Collections.emptyList(), Sf - lastMatchEnd);
-							
-							if (Ef == Ei) {
-								// ...<Sf>...<Si>...<Ef, Ei>...
-								spansBuilder.add(Collections.singleton(CssF), Si - Sf);
-								spansBuilder.add(Arrays.asList(CssF, CssI), Ei - Si);
-								lastMatchEnd = Ei;
-							}
-							else {
-								// ...<Sf>...<Si>...<Ei>...<Ef>...
-								spansBuilder.add(Collections.singleton(CssF), Si - Sf);
-								spansBuilder.add(Arrays.asList(CssF, CssI), Ei - Si);
-								spansBuilder.add(Collections.singleton(CssF), Ef - Ei);
-								lastMatchEnd = Ef;
-							}
-							// ...<Sf>...<Si>...<Ef>...<Ei>... can't happen because Ef will always be the end of the line and Ei can't be more than that
+						// ...<Sf>...<Si>...<Ei>...<Ef>...
+						if (multipleInLineMatchesInFullLineMatch) {
+							spansBuilder.add(Collections.singleton(CssF), Si - lastMatchEnd);
 						}
 						else {
-							// ...<Si>...<Sf>...
-							spansBuilder.add(Collections.emptyList(), Si - lastMatchEnd);
-							
-							if (Ef == Ei) {
-								// ...<Si>...<Sf>...<Ef, Ei>...
-								spansBuilder.add(Collections.singleton(CssI), Sf - Si);
-								spansBuilder.add(Arrays.asList(CssF, CssI), Ei - Si);
-								lastMatchEnd = Ei;
-							}
-							else {
-								// ...<Si>...<Sf>...<Ei>...<Ef>...
-								spansBuilder.add(Collections.singleton(CssF), Sf - Si);
-								spansBuilder.add(Arrays.asList(CssF, CssI), Ei - Sf);
-								spansBuilder.add(Collections.singleton(CssI), Ef - Ei);
-								lastMatchEnd = Ef;
-							}
-							// ...<Si>...<Sf>...<Ef>...<Ei>... can't happen because Ef will always be the end of the line and Ei can't be more than that
+							spansBuilder.add(Collections.singleton(CssF), Si - Sf);
 						}
+						spansBuilder.add(Arrays.asList(CssF, CssI), Ei - Si);
+						lastMatchEnd = Ei;
 					}
+					// ...<Sf>...<Si>...<Ef>...<Ei>... can't happen because Ef will always be the end of the line and Ei can't be more than that
 					
-					fullLineMatchesIndex++;
 					inLineMatchesIndex++;
+					if (inLineMatches.size() <= inLineMatchesIndex || inLineMatches.get(inLineMatchesIndex).startIndex > Ef) {
+						//the next inline match is after this full line match or there is no next inline match
+						spansBuilder.add(Collections.singleton(CssF), Ef - Ei);
+						lastMatchEnd = Ef;
+						fullLineMatchesIndex++;
+						multipleInLineMatchesInFullLineMatch = false;
+					}
+					else {
+						multipleInLineMatchesInFullLineMatch = true;
+					}
 				}
 			}
 			else {
@@ -293,19 +276,6 @@ public class HighlightingConfigurator implements CodeAreaConfiguator {
 			}
 			
 			if (!matchesIntersect) {
-				if (nextMatch == null) {
-					if (noIntersectionBecauseFullLineFirst) {
-						nextMatch = nextFullLineMatch;
-						
-						fullLineMatchesIndex++;
-					}
-					else {
-						nextMatch = nextInLineMatch;
-						
-						inLineMatchesIndex++;
-					}
-				}
-				
 				spansBuilder.add(Collections.emptyList(), nextMatch.startIndex - lastMatchEnd);
 				spansBuilder.add(Collections.singleton(nextMatch.cssStyleClass), nextMatch.endIndex - nextMatch.startIndex);
 				lastMatchEnd = nextMatch.endIndex;
