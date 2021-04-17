@@ -253,7 +253,8 @@ public class TodoFrameController implements Initializable {
 	 * @return The TodoTabController (as Optional) or an empty Optional
 	 */
 	public Optional<TodoTabController> getTabControllerForFile(File file) {
-		return todoTabControllers.stream().filter(controller -> controller.getFile().equals(file)).findAny();
+		return todoTabControllers.stream().filter(controller -> controller.getFile() != null).
+				filter(controller -> controller.getFile().equals(file)).findAny();
 	}
 	
 	public boolean isWordWrapEnabled() {
